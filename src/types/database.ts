@@ -31,3 +31,28 @@ export type CreateHomeworkInput = {
   due_at?: string;
 };
 
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correct_answer: string;
+  marks: number;
+}
+
+export interface Quiz {
+  id: string;
+  title: string;
+  description: string | null;
+  subject: string | null;
+  duration_seconds: number;
+  questions: QuizQuestion[];
+  created_at: string;
+}
+
+export type CreateQuizInput = {
+  title: string;
+  description?: string;
+  subject?: string;
+  duration_seconds: number;
+  questions: QuizQuestion[];
+};

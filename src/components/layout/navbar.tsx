@@ -38,7 +38,7 @@ export function Navbar() {
       href: "/quizzes",
       icon: GraduationCap,
       active: pathname === "/quizzes",
-      badge: "Task 03/04",
+      badge: "Task 04",
     },
     {
       name: "Study Planner",
