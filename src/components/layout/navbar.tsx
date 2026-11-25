@@ -32,7 +32,6 @@ export function Navbar() {
       href: "/homework",
       icon: FileCheck2,
       active: pathname === "/homework",
-      badge: "Task 02",
     },
     {
       name: "Quizzes",

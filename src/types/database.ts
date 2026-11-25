@@ -22,3 +22,12 @@ export type CreateResourceInput = {
   topic?: string;
   external_url?: string;
 };
+
+export type CreateHomeworkInput = {
+  title: string;
+  description?: string;
+  subject?: string;
+  instructions?: string;
+  due_at?: string;
+};
+
