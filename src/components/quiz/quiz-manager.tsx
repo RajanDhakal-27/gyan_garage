@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Quiz } from "@/types/database";
 import { useRole } from "@/context/role-context";
@@ -35,6 +36,7 @@ import {
 import { toast } from "sonner";
 
 export function QuizManager() {
+  const router = useRouter();
   const { isTeacher, setRole } = useRole();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -106,10 +108,7 @@ export function QuizManager() {
   };
 
   const handleStartQuiz = (quiz: Quiz) => {
-    // In Task 03, preview details and announce Task 04 interactive attempt
-    setSelectedQuizForDetail(quiz);
-    setIsDetailDialogOpen(true);
-    toast.info(`Ready to attempt "${quiz.title}". Interactive timer launches in Task 04!`);
+    router.push(`/quizzes/${quiz.id}`);
   };
 
   const handleSeedSampleQuizzes = async () => {

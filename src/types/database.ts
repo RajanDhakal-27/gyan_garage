@@ -56,3 +56,19 @@ export type CreateQuizInput = {
   duration_seconds: number;
   questions: QuizQuestion[];
 };
+
+export interface SubmittedAnswer {
+  question_id: string;
+  selected_answer: string;
+}
+
+export interface QuizAttempt {
+  id: string;
+  quiz_id: string;
+  answers: SubmittedAnswer[];
+  score: number;
+  total_marks: number;
+  submitted_at: string | null;
+  created_at: string;
+}
+

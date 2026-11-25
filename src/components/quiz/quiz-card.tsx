@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { Quiz } from "@/types/database";
 import { useRole } from "@/context/role-context";
 import { formatQuizDuration, calculateTotalMarks } from "@/lib/quiz";
@@ -175,14 +176,26 @@ export function QuizCard({
           </Button>
         )}
 
-        <Button
-          size="sm"
-          onClick={() => onStartQuiz ? onStartQuiz(quiz) : onViewDetails?.(quiz)}
-          className="h-7 px-3 text-xs gap-1 shadow-2xs"
-        >
-          <PlayCircle className="size-3.5" />
-          <span>Start Quiz</span>
-        </Button>
+        {onStartQuiz ? (
+          <Button
+            size="sm"
+            onClick={() => onStartQuiz(quiz)}
+            className="h-7 px-3 text-xs gap-1 shadow-2xs"
+          >
+            <PlayCircle className="size-3.5" />
+            <span>Start Quiz</span>
+          </Button>
+        ) : (
+          <Link href={`/quizzes/${quiz.id}`}>
+            <Button
+              size="sm"
+              className="h-7 px-3 text-xs gap-1 shadow-2xs"
+            >
+              <PlayCircle className="size-3.5" />
+              <span>Start Quiz</span>
+            </Button>
+          </Link>
+        )}
       </CardFooter>
     </Card>
   );

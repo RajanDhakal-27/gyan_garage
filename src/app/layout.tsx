@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { RoleProvider } from "@/context/role-context";
@@ -33,7 +34,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <RoleProvider>
-          <Navbar />
+          <Suspense fallback={<header className="h-16 border-b bg-background" />}>
+            <Navbar />
+          </Suspense>
           <main className="flex-1">{children}</main>
           <Toaster position="top-right" richColors />
         </RoleProvider>
