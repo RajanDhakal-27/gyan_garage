@@ -72,3 +72,19 @@ export interface QuizAttempt {
   created_at: string;
 }
 
+export interface StudyTask {
+  id: string;
+  title: string;
+  description: string | null;
+  target_date: string | null;
+  is_completed: boolean;
+  created_at: string;
+}
+
+export type CreateStudyTaskInput = {
+  title: string;
+  description?: string;
+  target_date?: string;
+};
+
+

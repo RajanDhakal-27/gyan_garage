@@ -20,7 +20,13 @@ export function Navbar() {
   const pathname = usePathname();
   const { role, setRole, isTeacher } = useRole();
 
-  const navLinks = [
+  const navLinks: {
+    name: string;
+    href: string;
+    icon: typeof BookOpen;
+    active: boolean;
+    badge?: string;
+  }[] = [
     {
       name: "Resources",
       href: "/",
@@ -44,7 +50,6 @@ export function Navbar() {
       href: "/planner",
       icon: ListTodo,
       active: pathname === "/planner",
-      badge: "Task 05",
     },
   ];
 
