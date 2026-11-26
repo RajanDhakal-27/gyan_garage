@@ -37,48 +37,48 @@ export function getCDCGrade(percentage: number): {
     return {
       grade: "A+ (Outstanding)",
       gradeBadgeClass:
-        "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-300",
+        "bg-[#10B981]/15 text-[#047857] border-[#10B981]/40",
     };
   }
   if (percentage >= 80) {
     return {
       grade: "A (Excellent)",
       gradeBadgeClass:
-        "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200",
+        "bg-[#10B981]/10 text-[#047857] border-[#10B981]/25",
     };
   }
   if (percentage >= 70) {
     return {
       grade: "B+ (Very Good)",
       gradeBadgeClass:
-        "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200",
+        "bg-[#0EA5E9]/10 text-[#0284C7] border-[#0EA5E9]/25",
     };
   }
   if (percentage >= 60) {
     return {
       grade: "B (Good)",
       gradeBadgeClass:
-        "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200",
+        "bg-[#0EA5E9]/10 text-[#0284C7] border-[#0EA5E9]/20",
     };
   }
   if (percentage >= 50) {
     return {
       grade: "C+ (Satisfactory)",
       gradeBadgeClass:
-        "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200",
+        "bg-[#F59E0B]/10 text-[#B45309] border-[#F59E0B]/25",
     };
   }
   if (percentage >= 35) {
     return {
       grade: "C (Acceptable)",
       gradeBadgeClass:
-        "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200",
+        "bg-[#F59E0B]/10 text-[#B45309] border-[#F59E0B]/20",
     };
   }
   return {
     grade: "Non-Graded (NG)",
     gradeBadgeClass:
-      "bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300 border-red-200",
+      "bg-[#DB2777]/10 text-[#DB2777] border-[#DB2777]/25",
   };
 }
 

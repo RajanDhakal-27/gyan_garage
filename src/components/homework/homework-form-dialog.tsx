@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Loader2, Calendar } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const COMMON_SUBJECTS = ["Mathematics", "Science", "English", "Social Studies", "Nepali"];
@@ -160,23 +160,23 @@ export function HomeworkFormDialog({
       ) : !isControlled ? (
         <DialogTrigger
           render={
-            <Button className="gap-1.5 shadow-sm">
+            <Button>
               <Plus className="size-4" />
-              <span>Create Homework</span>
+              <span>Create homework</span>
             </Button>
           }
         />
       ) : null}
 
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
-            {isEditMode ? "Edit Homework Assignment" : "Assign New Homework"}
+            {isEditMode ? "Edit homework assignment" : "Assign new homework"}
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? "Update assignment directions, deadlines, or subject details."
-              : "Post homework with directions and submission due date for students."}
+              ? "Update assignment directions, deadlines or subject details."
+              : "Post homework with directions and a submission due date for students."}
           </DialogDescription>
         </DialogHeader>
 
@@ -185,9 +185,9 @@ export function HomeworkFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="hw_title"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
-              Assignment Title <span className="text-destructive">*</span>
+              Assignment title <span className="text-[#DB2777]">*</span>
             </label>
             <Input
               id="hw_title"
@@ -200,7 +200,7 @@ export function HomeworkFormDialog({
               required
             />
             {errors.title && (
-              <p className="text-xs text-destructive">{errors.title}</p>
+              <p className="text-xs font-medium text-[#DB2777]">{errors.title}</p>
             )}
           </div>
 
@@ -208,7 +208,7 @@ export function HomeworkFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="hw_subject"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
               Subject
             </label>
@@ -224,7 +224,7 @@ export function HomeworkFormDialog({
                   type="button"
                   key={s}
                   onClick={() => setSubject(s)}
-                  className="rounded border border-muted bg-muted/40 px-1.5 py-0.5 text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className="cursor-pointer rounded-full border border-white/60 bg-[#EFEBF5] px-3.5 py-1.5 font-heading text-[11px] font-extrabold text-[#635F69] shadow-clayPressed transition-all hover:-translate-y-0.5 hover:text-[#7C3AED]"
                 >
                   {s}
                 </button>
@@ -236,7 +236,7 @@ export function HomeworkFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="hw_due_at"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
               Submission Due Date & Time
             </label>
@@ -250,7 +250,7 @@ export function HomeworkFormDialog({
               }}
             />
             {errors.due_at && (
-              <p className="text-xs text-destructive">{errors.due_at}</p>
+              <p className="text-xs font-medium text-[#DB2777]">{errors.due_at}</p>
             )}
           </div>
 
@@ -258,7 +258,7 @@ export function HomeworkFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="hw_instructions"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
               Detailed Instructions & Questions
             </label>
@@ -275,7 +275,7 @@ export function HomeworkFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="hw_desc"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
               Brief Description (Optional)
             </label>
@@ -296,14 +296,14 @@ export function HomeworkFormDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="gap-1.5">
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
-                  <span>{isEditMode ? "Saving..." : "Assigning..."}</span>
+                  <span>{isEditMode ? "Saving…" : "Assigning…"}</span>
                 </>
               ) : (
-                <span>{isEditMode ? "Save Changes" : "Post Homework"}</span>
+                <span>{isEditMode ? "Save changes" : "Post homework"}</span>
               )}
             </Button>
           </DialogFooter>

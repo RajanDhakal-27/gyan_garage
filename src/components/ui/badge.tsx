@@ -4,20 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 
 const badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-none border border-[rgba(20,28,43,0.16)] px-2 py-0.5 text-xs font-mono font-medium uppercase tracking-wider whitespace-nowrap transition-all focus-visible:ring-1 focus-visible:ring-[#2C4A8F] [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "group/badge inline-flex h-7 w-fit shrink-0 items-center justify-center gap-1.5 overflow-hidden rounded-full border px-3.5 font-heading text-xs font-extrabold tracking-wide whitespace-nowrap transition-all focus-visible:ring-4 focus-visible:ring-[#7C3AED]/25 [&>svg]:pointer-events-none [&>svg]:size-3.5!",
   {
     variants: {
       variant: {
-        default: "bg-[#2C4A8F] text-[#EFE9DD] [a]:hover:bg-[#2C4A8F]/90",
+        default:
+          "border-white/30 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-[0_4px_12px_rgba(124,58,237,0.28),inset_1px_1px_3px_rgba(255,255,255,0.35)] [a]:hover:brightness-105",
         secondary:
-          "bg-[#E5DED0] text-[#141C2B] border-[rgba(20,28,43,0.16)] [a]:hover:bg-[#E5DED0]/80",
+          "border-white/70 bg-[#EFEBF5] text-[#332F3A] shadow-clayPressed [a]:hover:bg-white/80",
         destructive:
-          "bg-[#A33A3A]/10 text-[#A33A3A] border-[#A33A3A]/30 [a]:hover:bg-[#A33A3A]/20",
+          "border-[#DB2777]/25 bg-[#DB2777]/10 text-[#DB2777] [a]:hover:bg-[#DB2777]/15",
         outline:
-          "border-[rgba(20,28,43,0.2)] text-[#141C2B] bg-transparent [a]:hover:bg-[#E5DED0]",
-        ghost:
-          "hover:bg-[#E5DED0] hover:text-[#141C2B]",
-        link: "text-[#2C4A8F] underline-offset-4 hover:underline",
+          "border-white/80 bg-white/60 text-[#332F3A] shadow-clayCard backdrop-blur-md [a]:hover:bg-white/80",
+        ghost: "border-transparent text-[#635F69] hover:bg-[#EFEBF5] hover:text-[#332F3A]",
+        link: "border-transparent text-[#7C3AED] underline-offset-4 hover:underline",
       },
     },
     defaultVariants: {

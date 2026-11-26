@@ -5,7 +5,6 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { LearningItem, Quiz } from "@/types/database";
 import { useRole } from "@/context/role-context";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,20 +12,12 @@ import {
   FileCheck2,
   GraduationCap,
   FileText,
-  Plus,
   ArrowRight,
   ExternalLink,
   ChevronRight,
-  Users,
-  Layers,
-  Sparkles,
-  ClipboardList,
   FolderPlus,
   Loader2,
-  School,
 } from "lucide-react";
-import { toast } from "sonner";
-import { cn } from "cn";
 
 export default function TeacherDashboard() {
   const { gradesTaught, setIsOnboardingOpen } = useRole();
@@ -40,7 +31,6 @@ export default function TeacherDashboard() {
     try {
       setIsLoading(true);
 
-      // Load learning items (resources and homework)
       const { data: items } = await supabase
         .from("learning_items")
         .select("*")
@@ -50,7 +40,6 @@ export default function TeacherDashboard() {
       setResources(allItems.filter((i) => i.item_type === "resource"));
       setHomeworks(allItems.filter((i) => i.item_type === "homework"));
 
-      // Load quizzes
       const { data: quizData } = await supabase
         .from("quizzes")
         .select("*")
@@ -74,227 +63,231 @@ export default function TeacherDashboard() {
       r.resource_type?.toLowerCase().includes("question")
   ).length;
 
+  const metrics = [
+    {
+      label: "Published resources",
+      value: resources.length,
+      hint: "Notes, videos & textbooks",
+      icon: BookOpen,
+      tint: "from-[#A78BFA] to-[#7C3AED]",
+    },
+    {
+      label: "Active quizzes",
+      value: quizzes.length,
+      hint: "Timed evaluations",
+      icon: GraduationCap,
+      tint: "from-[#67E8F9] to-[#0EA5E9]",
+    },
+    {
+      label: "Homework tasks",
+      value: homeworks.length,
+      hint: "Assignments with deadlines",
+      icon: FileCheck2,
+      tint: "from-[#6EE7B7] to-[#10B981]",
+    },
+    {
+      label: "Question papers",
+      value: questionPapersCount,
+      hint: "Past exams & model sets",
+      icon: FileText,
+      tint: "from-[#FCD34D] to-[#F59E0B]",
+    },
+  ];
+
+  const actions = [
+    {
+      href: "/library",
+      title: "Publish material",
+      description:
+        "Upload chapters, PDF links, video lectures and revision summaries.",
+      icon: BookOpen,
+      tint: "from-[#A78BFA] to-[#7C3AED]",
+    },
+    {
+      href: "/homework",
+      title: "Assign homework",
+      description:
+        "Set problem sets, exercise due dates and submission guidelines.",
+      icon: FileCheck2,
+      tint: "from-[#6EE7B7] to-[#10B981]",
+    },
+    {
+      href: "/quizzes",
+      title: "Author quizzes",
+      description:
+        "Create multiple-choice questions with marks, notes and timers.",
+      icon: GraduationCap,
+      tint: "from-[#67E8F9] to-[#0EA5E9]",
+    },
+    {
+      href: "/question-papers",
+      title: "Question bank",
+      description:
+        "Index previous papers, terminal mocks and answer keys.",
+      icon: FileText,
+      tint: "from-[#F9A8D4] to-[#DB2777]",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-background text-foreground py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-10">
-        {/* Studio Header */}
-        <div className="border-b border-border/80 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="font-mono text-xs uppercase tracking-widest text-primary font-semibold">
-                Educator Studio
-              </span>
-              <span className="text-border">/</span>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {gradesTaught && gradesTaught.length > 0 ? (
-                  gradesTaught.map((g) => (
-                    <Badge key={g} variant="outline" className="font-mono text-xs">
-                      {g}
-                    </Badge>
-                  ))
-                ) : (
-                  <Badge variant="outline" className="font-mono text-xs">
-                    Secondary Levels
+    <div className="min-h-screen px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-10">
+        {/* Header */}
+        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="secondary">Educator studio</Badge>
+              {gradesTaught && gradesTaught.length > 0 ? (
+                gradesTaught.map((g) => (
+                  <Badge key={g} variant="outline">
+                    {g}
                   </Badge>
-                )}
-              </div>
+                ))
+              ) : (
+                <Badge variant="outline">Secondary levels</Badge>
+              )}
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
+            <h1 className="font-heading text-3xl font-black tracking-tight text-[#332F3A] sm:text-4xl lg:text-5xl">
               Curriculum & Instruction Studio
             </h1>
-            <p className="font-mono text-xs sm:text-sm text-muted-foreground max-w-2xl">
-              Publish subject syllabi, author timed diagnostic quizzes, manage assignments, and curate past question papers.
+            <p className="max-w-2xl text-sm leading-relaxed text-[#635F69] sm:text-base">
+              Publish subject syllabi, author timed diagnostic quizzes, manage
+              assignments and curate past question papers.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setIsOnboardingOpen(true)}
-              className="font-mono text-xs"
             >
-              Update Taught Grades
+              Update taught grades
             </Button>
             <Link href="/library">
-              <Button size="sm" className="font-mono text-xs gap-1.5">
-                <FolderPlus className="size-3.5" />
-                Publish Resource
+              <Button size="sm">
+                <FolderPlus className="size-4" />
+                Publish resource
               </Button>
             </Link>
           </div>
         </div>
 
-        {/* Overview Metric Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border-border/80 p-5 space-y-2 bg-card">
-            <div className="flex items-center justify-between text-muted-foreground font-mono text-xs uppercase">
-              <span>Published Resources</span>
-              <BookOpen className="size-4 text-primary" />
-            </div>
-            <div className="font-serif text-3xl font-medium text-foreground">
-              {resources.length}
-            </div>
-            <p className="font-mono text-xs text-muted-foreground">
-              Study notes, videos & textbooks
-            </p>
-          </Card>
-
-          <Card className="border-border/80 p-5 space-y-2 bg-card">
-            <div className="flex items-center justify-between text-muted-foreground font-mono text-xs uppercase">
-              <span>Active Quizzes</span>
-              <GraduationCap className="size-4 text-primary" />
-            </div>
-            <div className="font-serif text-3xl font-medium text-foreground">
-              {quizzes.length}
-            </div>
-            <p className="font-mono text-xs text-muted-foreground">
-              Objective timed evaluations
-            </p>
-          </Card>
-
-          <Card className="border-border/80 p-5 space-y-2 bg-card">
-            <div className="flex items-center justify-between text-muted-foreground font-mono text-xs uppercase">
-              <span>Homework Tasks</span>
-              <FileCheck2 className="size-4 text-primary" />
-            </div>
-            <div className="font-serif text-3xl font-medium text-foreground">
-              {homeworks.length}
-            </div>
-            <p className="font-mono text-xs text-muted-foreground">
-              Assignments with deadlines
-            </p>
-          </Card>
-
-          <Card className="border-border/80 p-5 space-y-2 bg-card">
-            <div className="flex items-center justify-between text-muted-foreground font-mono text-xs uppercase">
-              <span>Question Papers</span>
-              <FileText className="size-4 text-primary" />
-            </div>
-            <div className="font-serif text-3xl font-medium text-foreground">
-              {questionPapersCount}
-            </div>
-            <p className="font-mono text-xs text-muted-foreground">
-              Past exams & model question sets
-            </p>
-          </Card>
+        {/* Metrics */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {metrics.map((metric) => {
+            const Icon = metric.icon;
+            return (
+              <div
+                key={metric.label}
+                className="rounded-[32px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-clayDeep"
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#635F69]">
+                    {metric.label}
+                  </span>
+                  <span
+                    className={`flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br ${metric.tint} text-white shadow-clayButton`}
+                  >
+                    <Icon className="size-5" />
+                  </span>
+                </div>
+                <div className="font-heading text-3xl font-black tracking-tight text-[#332F3A]">
+                  {metric.value}
+                </div>
+                <p className="mt-1 text-xs text-[#635F69]">{metric.hint}</p>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Studio Operations / Action Launchers */}
+        {/* Actions */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 border-b border-border/80 pb-2">
-            <span className="font-mono text-xs text-primary font-bold">01.</span>
-            <h2 className="font-serif text-2xl font-medium">Curriculum Management Actions</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link
-              href="/library"
-              className="p-5 border border-border/80 bg-card hover:border-primary transition-colors space-y-3 group block"
-            >
-              <div className="flex items-center justify-between">
-                <BookOpen className="size-6 text-primary" />
-                <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </div>
-              <h3 className="font-serif text-lg font-medium">Publish Material</h3>
-              <p className="font-mono text-xs text-muted-foreground">
-                Upload chapters, PDF links, video lectures, and revision summaries.
-              </p>
-            </Link>
-
-            <Link
-              href="/homework"
-              className="p-5 border border-border/80 bg-card hover:border-primary transition-colors space-y-3 group block"
-            >
-              <div className="flex items-center justify-between">
-                <FileCheck2 className="size-6 text-primary" />
-                <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </div>
-              <h3 className="font-serif text-lg font-medium">Assign Homework</h3>
-              <p className="font-mono text-xs text-muted-foreground">
-                Set problem sets, exercise due dates, and student submission guidelines.
-              </p>
-            </Link>
-
-            <Link
-              href="/quizzes"
-              className="p-5 border border-border/80 bg-card hover:border-primary transition-colors space-y-3 group block"
-            >
-              <div className="flex items-center justify-between">
-                <GraduationCap className="size-6 text-primary" />
-                <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </div>
-              <h3 className="font-serif text-lg font-medium">Author Quizzes</h3>
-              <p className="font-mono text-xs text-muted-foreground">
-                Create multiple-choice questions with marks, explanation notes, and timers.
-              </p>
-            </Link>
-
-            <Link
-              href="/question-papers"
-              className="p-5 border border-border/80 bg-card hover:border-primary transition-colors space-y-3 group block"
-            >
-              <div className="flex items-center justify-between">
-                <FileText className="size-6 text-primary" />
-                <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </div>
-              <h3 className="font-serif text-lg font-medium">Question Bank</h3>
-              <p className="font-mono text-xs text-muted-foreground">
-                Index previous examination papers, terminal mocks, and answer keys.
-              </p>
-            </Link>
+          <h2 className="font-heading text-2xl font-black tracking-tight text-[#332F3A]">
+            Curriculum management
+          </h2>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {actions.map((action) => {
+              const Icon = action.icon;
+              return (
+                <Link
+                  key={action.href}
+                  href={action.href}
+                  className="group rounded-[28px] border border-white/70 bg-white/70 p-5 shadow-clayCard backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-clayDeep"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <span
+                      className={`flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ${action.tint} text-white shadow-clayButton`}
+                    >
+                      <Icon className="size-6" />
+                    </span>
+                    <ArrowRight className="size-4 text-[#635F69] transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[#7C3AED]" />
+                  </div>
+                  <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+                    {action.title}
+                  </h3>
+                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[#635F69]">
+                    {action.description}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
         </div>
 
-        {/* Content Feeds: 2 Columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Teaching Materials */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-border/80 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs text-primary font-bold">02.</span>
-                <h3 className="font-serif text-xl font-medium">Recent Teaching Materials</h3>
-              </div>
+        {/* Feeds */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          <div className="rounded-[36px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="font-heading text-xl font-black tracking-tight text-[#332F3A]">
+                Recent teaching materials
+              </h3>
               <Link
                 href="/library"
-                className="font-mono text-xs text-primary hover:underline flex items-center gap-1"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#7C3AED] hover:underline"
               >
-                Manage All <ChevronRight className="size-3" />
+                Manage all
+                <ChevronRight className="size-3" />
               </Link>
             </div>
 
-            <div className="divide-y divide-border/60 border border-border/80 bg-card">
+            <div className="space-y-2">
               {isLoading ? (
-                <div className="p-8 text-center text-muted-foreground font-mono text-xs">
-                  Loading teaching archive...
-                </div>
+                <p className="flex items-center justify-center gap-2 rounded-2xl bg-[#EFEBF5] p-6 text-xs text-[#635F69]">
+                  <Loader2 className="size-4 animate-spin" />
+                  Loading teaching archive…
+                </p>
               ) : resources.length === 0 ? (
-                <div className="p-8 text-center space-y-2">
-                  <p className="font-mono text-xs text-muted-foreground">
-                    No learning materials published.
+                <div className="rounded-2xl bg-[#EFEBF5] p-6 text-center">
+                  <p className="text-xs text-[#635F69]">
+                    No learning materials published yet.
                   </p>
-                  <Link href="/library">
-                    <Button size="sm" variant="outline" className="font-mono text-xs mt-2">
-                      Publish First Material
+                  <Link href="/library" className="mt-3 inline-block">
+                    <Button size="sm" variant="outline">
+                      Publish first material
                     </Button>
                   </Link>
                 </div>
               ) : (
                 resources.slice(0, 5).map((r) => (
-                  <div key={r.id} className="p-4 flex items-center justify-between gap-4 hover:bg-muted/40 transition-colors">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-[10px] text-primary uppercase font-bold">
+                  <div
+                    key={r.id}
+                    className="flex items-center justify-between gap-4 rounded-2xl px-4 py-3 transition-colors hover:bg-[#EFEBF5]/70"
+                  >
+                    <div className="min-w-0 space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-heading text-[10px] font-extrabold uppercase tracking-wide text-[#7C3AED]">
                           {r.subject || "General"}
                         </span>
-                        <Badge variant="outline" className="font-mono text-[10px] py-0 px-1.5">
+                        <Badge variant="outline">
                           {r.resource_type || "Resource"}
                         </Badge>
                       </div>
-                      <h4 className="font-serif text-sm font-medium">{r.title}</h4>
+                      <h4 className="truncate text-sm font-bold text-[#332F3A]">
+                        {r.title}
+                      </h4>
                       {r.topic && (
-                        <p className="font-mono text-[11px] text-muted-foreground">
-                          Topic: {r.topic}
-                        </p>
+                        <p className="text-[11px] text-[#635F69]">Topic: {r.topic}</p>
                       )}
                     </div>
 
@@ -303,7 +296,7 @@ export default function TeacherDashboard() {
                         href={r.external_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-primary transition-colors shrink-0 p-1"
+                        className="shrink-0 rounded-full p-2 text-[#635F69] transition-colors hover:bg-[#7C3AED]/10 hover:text-[#7C3AED]"
                         title="Open external link"
                       >
                         <ExternalLink className="size-4" />
@@ -315,48 +308,52 @@ export default function TeacherDashboard() {
             </div>
           </div>
 
-          {/* Active Homework & Quizzes */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-border/80 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs text-primary font-bold">03.</span>
-                <h3 className="font-serif text-xl font-medium">Assignments & Quizzes</h3>
-              </div>
+          <div className="rounded-[36px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="font-heading text-xl font-black tracking-tight text-[#332F3A]">
+                Assignments & quizzes
+              </h3>
               <Link
                 href="/homework"
-                className="font-mono text-xs text-primary hover:underline flex items-center gap-1"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#7C3AED] hover:underline"
               >
-                Homework View <ChevronRight className="size-3" />
+                Homework
+                <ChevronRight className="size-3" />
               </Link>
             </div>
 
-            <div className="divide-y divide-border/60 border border-border/80 bg-card">
+            <div className="space-y-2">
               {homeworks.length === 0 && quizzes.length === 0 ? (
-                <div className="p-8 text-center text-muted-foreground font-mono text-xs">
+                <p className="rounded-2xl bg-[#EFEBF5] p-6 text-center text-xs text-[#635F69]">
                   No active assignments or quizzes yet.
-                </div>
+                </p>
               ) : (
                 <>
                   {homeworks.slice(0, 3).map((hw) => (
-                    <div key={hw.id} className="p-4 flex items-center justify-between gap-4 hover:bg-muted/40 transition-colors">
-                      <div className="space-y-1">
+                    <div
+                      key={hw.id}
+                      className="flex items-center justify-between gap-4 rounded-2xl px-4 py-3 transition-colors hover:bg-[#EFEBF5]/70"
+                    >
+                      <div className="min-w-0 space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-[10px] text-primary uppercase font-bold">
+                          <span className="font-heading text-[10px] font-extrabold uppercase tracking-wide text-[#10B981]">
                             Assignment
                           </span>
-                          <span className="font-mono text-[10px] text-muted-foreground">
+                          <span className="text-[10px] text-[#635F69]">
                             {hw.subject}
                           </span>
                         </div>
-                        <h4 className="font-serif text-sm font-medium">{hw.title}</h4>
+                        <h4 className="truncate text-sm font-bold text-[#332F3A]">
+                          {hw.title}
+                        </h4>
                         {hw.due_at && (
-                          <p className="font-mono text-[11px] text-muted-foreground">
+                          <p className="text-[11px] text-[#635F69]">
                             Due: {new Date(hw.due_at).toLocaleDateString()}
                           </p>
                         )}
                       </div>
                       <Link href="/homework">
-                        <Button size="sm" variant="ghost" className="font-mono text-xs">
+                        <Button size="xs" variant="ghost">
                           Inspect
                         </Button>
                       </Link>
@@ -364,23 +361,27 @@ export default function TeacherDashboard() {
                   ))}
 
                   {quizzes.slice(0, 3).map((q) => (
-                    <div key={q.id} className="p-4 flex items-center justify-between gap-4 hover:bg-muted/40 transition-colors">
-                      <div className="space-y-1">
+                    <div
+                      key={q.id}
+                      className="flex items-center justify-between gap-4 rounded-2xl px-4 py-3 transition-colors hover:bg-[#EFEBF5]/70"
+                    >
+                      <div className="min-w-0 space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-[10px] text-primary uppercase font-bold">
-                            Timed Quiz
+                          <span className="font-heading text-[10px] font-extrabold uppercase tracking-wide text-[#0EA5E9]">
+                            Timed quiz
                           </span>
-                          <span className="font-mono text-[10px] text-muted-foreground">
-                            {q.subject}
-                          </span>
+                          <span className="text-[10px] text-[#635F69]">{q.subject}</span>
                         </div>
-                        <h4 className="font-serif text-sm font-medium">{q.title}</h4>
-                        <p className="font-mono text-[11px] text-muted-foreground">
-                          {q.questions?.length || 0} Questions • {Math.round(q.duration_seconds / 60)}m
+                        <h4 className="truncate text-sm font-bold text-[#332F3A]">
+                          {q.title}
+                        </h4>
+                        <p className="text-[11px] text-[#635F69]">
+                          {q.questions?.length || 0} questions ·{" "}
+                          {Math.round(q.duration_seconds / 60)}m
                         </p>
                       </div>
                       <Link href={`/quizzes/${q.id}`}>
-                        <Button size="sm" variant="ghost" className="font-mono text-xs">
+                        <Button size="xs" variant="ghost">
                           Preview
                         </Button>
                       </Link>

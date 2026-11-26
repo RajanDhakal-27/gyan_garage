@@ -15,8 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   ListTodo,
-  CheckCircle2,
-  Circle,
   Plus,
   RefreshCw,
   Search,
@@ -28,7 +26,6 @@ import {
   Target,
 } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "cn";
 
 export function PlannerManager() {
   const [tasks, setTasks] = useState<StudyTask[]>([]);
@@ -129,7 +126,7 @@ export function PlannerManager() {
       toast.success(
         nextStatus ? "Target marked as completed!" : "Target reopened as pending."
       );
-    } catch (err: unknown) {
+    } catch {
       // Revert on error
       setTasks((prev) =>
         prev.map((t) => (t.id === id ? { ...t, is_completed: currentCompleted } : t))
@@ -150,7 +147,7 @@ export function PlannerManager() {
 
       setTasks((prev) => prev.filter((t) => t.id !== id));
       toast.success("Target removed.");
-    } catch (err: unknown) {
+    } catch {
       toast.error("Failed to delete target.");
     }
   };
@@ -177,7 +174,7 @@ export function PlannerManager() {
 
       toast.success("Loaded 5 sample Nepali curriculum study targets!");
       await fetchTasks();
-    } catch (err: unknown) {
+    } catch {
       toast.error("Failed to load sample tasks.");
     } finally {
       setIsSeeding(false);
@@ -196,24 +193,24 @@ export function PlannerManager() {
   }, [tasks, statusFilter, searchQuery]);
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 space-y-6">
+    <div className="mx-auto max-w-5xl space-y-7 px-4 py-10 sm:px-6">
       {/* Header Banner */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b pb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Student Study Planner
-            </h1>
-            <Badge variant="outline" className="hidden sm:inline-flex">
-              Task 05 • Must 5
-            </Badge>
+      <div className="flex flex-col gap-5 rounded-[36px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary">Study planner</Badge>
+            <Badge variant="outline">Daily targets · Revision</Badge>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Manage your daily study targets, syllabus revision to-do lists, and track completion progress.
+          <h1 className="font-heading text-3xl font-black tracking-tight text-[#332F3A] sm:text-4xl">
+            Student Study Planner
+          </h1>
+          <p className="max-w-2xl text-sm leading-relaxed text-[#635F69]">
+            Manage daily study targets, syllabus revision to-do lists and track
+            completion progress.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex flex-wrap items-center gap-2">
           <TaskFormDialog onTaskSaved={fetchTasks} />
 
           {tasks.length === 0 && !isLoading && (
@@ -222,80 +219,76 @@ export function PlannerManager() {
               size="sm"
               onClick={handleSeedSampleTasks}
               disabled={isSeeding}
-              className="gap-1.5 text-xs"
             >
               {isSeeding ? (
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <Sparkles className="size-3.5 text-amber-500" />
+                <Sparkles className="size-4 text-[#F59E0B]" />
               )}
-              <span>Load Sample Targets</span>
+              <span>Load samples</span>
             </Button>
           )}
 
           <Button
             variant="ghost"
-            size="icon"
+            size="icon-sm"
             onClick={fetchTasks}
             disabled={isLoading}
             title="Refresh tasks"
             aria-label="Refresh tasks"
           >
-            <RefreshCw className={isLoading ? "size-4 animate-spin" : "size-4"} />
+            <RefreshCw className={isLoading ? "size-5 animate-spin" : "size-5"} />
           </Button>
         </div>
       </div>
 
       {/* Progress Card Dashboard */}
-      <div className="rounded-2xl border bg-card p-5 sm:p-6 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <div className="space-y-5 rounded-[36px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl sm:p-8">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <div>
-            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <Target className="size-4 text-primary" />
-              <span>Target Progress</span>
+            <h3 className="flex items-center gap-2 font-heading text-lg font-extrabold text-[#332F3A]">
+              <Target className="size-5 text-[#7C3AED]" />
+              <span>Target progress</span>
             </h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="mt-0.5 text-xs text-[#635F69]">
               {metrics.completed} of {metrics.total} targets accomplished
             </p>
           </div>
 
-          <span className="text-2xl font-extrabold text-primary">
+          <span className="font-heading text-3xl font-black text-[#7C3AED]">
             {metrics.percentage}%
           </span>
         </div>
 
         {/* Visual Progress Bar */}
-        <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/60">
+        <div className="h-3 w-full overflow-hidden rounded-full bg-[#EFEBF5] shadow-clayPressed">
           <div
-            className="h-full bg-primary transition-all duration-300 rounded-full"
+            className="h-full rounded-full bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] transition-all duration-500"
             style={{ width: `${metrics.percentage}%` }}
           />
         </div>
 
         {/* Filter Controls Bar */}
-        <div className="flex items-center justify-between pt-1 flex-wrap gap-2">
-          <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               variant={statusFilter === "all" ? "default" : "outline"}
-              size="sm"
+              size="xs"
               onClick={() => setStatusFilter("all")}
-              className="h-7 text-xs px-2.5"
             >
               All ({metrics.total})
             </Button>
             <Button
               variant={statusFilter === "pending" ? "default" : "outline"}
-              size="sm"
+              size="xs"
               onClick={() => setStatusFilter("pending")}
-              className="h-7 text-xs px-2.5"
             >
               Pending ({metrics.pending})
             </Button>
             <Button
               variant={statusFilter === "completed" ? "default" : "outline"}
-              size="sm"
+              size="xs"
               onClick={() => setStatusFilter("completed")}
-              className="h-7 text-xs px-2.5"
             >
               Completed ({metrics.completed})
             </Button>
@@ -304,9 +297,9 @@ export function PlannerManager() {
           {searchQuery && (
             <Button
               variant="ghost"
-              size="sm"
+              size="xs"
               onClick={() => setSearchQuery("")}
-              className="h-7 text-xs text-muted-foreground hover:text-foreground"
+              className="text-[#635F69] hover:text-[#332F3A]"
             >
               Clear search
             </Button>
@@ -315,16 +308,19 @@ export function PlannerManager() {
       </div>
 
       {/* Quick Add Form + Search Bar */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {/* Inline Quick Add Input (takes 2 cols) */}
-        <form onSubmit={handleQuickAdd} className="sm:col-span-2 flex items-center gap-2">
+        <form
+          onSubmit={handleQuickAdd}
+          className="flex items-center gap-2 sm:col-span-2"
+        >
           <div className="relative flex-1">
-            <Plus className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+            <Plus className="pointer-events-none absolute left-5 top-1/2 size-4 -translate-y-1/2 text-[#635F69]" />
             <Input
-              placeholder="Quick add target: e.g. Revise Math Chapter 3..."
+              placeholder="Quick add target: e.g. Revise Math Chapter 3…"
               value={quickTitle}
               onChange={(e) => setQuickTitle(e.target.value)}
-              className="pl-8 text-sm"
+              className="pl-12 pr-5 text-sm"
               disabled={isQuickAdding}
             />
           </div>
@@ -332,10 +328,10 @@ export function PlannerManager() {
             type="submit"
             size="sm"
             disabled={!quickTitle.trim() || isQuickAdding}
-            className="shrink-0 h-9"
+            className="shrink-0"
           >
             {isQuickAdding ? (
-              <Loader2 className="size-3.5 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
             ) : (
               <span>Add</span>
             )}
@@ -344,20 +340,20 @@ export function PlannerManager() {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+          <Search className="pointer-events-none absolute left-5 top-1/2 size-4 -translate-y-1/2 text-[#635F69]" />
           <Input
-            placeholder="Search targets..."
+            placeholder="Search targets…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 pr-7 text-sm"
+            className="pl-12 pr-11 text-sm"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-[#635F69] hover:text-[#332F3A]"
               aria-label="Clear search"
             >
-              <X className="size-3" />
+              <X className="size-4" />
             </button>
           )}
         </div>
@@ -369,55 +365,57 @@ export function PlannerManager() {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-16 rounded-xl border border-muted bg-muted/20 animate-pulse p-4"
+              className="h-20 animate-pulse rounded-[28px] border border-white/60 bg-white/40 shadow-clayPressed"
             />
           ))}
         </div>
       ) : error ? (
-        <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-8 text-center space-y-3">
-          <AlertCircle className="size-8 text-destructive mx-auto" />
-          <h3 className="font-semibold text-destructive">Failed to load study targets</h3>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">{error}</p>
-          <Button variant="outline" size="sm" onClick={fetchTasks} className="gap-1.5">
-            <RefreshCw className="size-3.5" />
-            <span>Try Again</span>
+        <div className="space-y-3 rounded-[32px] border border-[#DB2777]/20 bg-[#DB2777]/5 p-10 text-center">
+          <AlertCircle className="mx-auto size-9 text-[#DB2777]" />
+          <h3 className="font-heading text-lg font-extrabold text-[#DB2777]">
+            Failed to load study targets
+          </h3>
+          <p className="mx-auto max-w-md text-sm text-[#635F69]">{error}</p>
+          <Button variant="outline" size="sm" onClick={fetchTasks}>
+            <RefreshCw className="size-4" />
+            <span>Try again</span>
           </Button>
         </div>
       ) : tasks.length === 0 ? (
         /* Empty Database State */
-        <div className="rounded-2xl border border-dashed border-border p-12 text-center space-y-4 max-w-md mx-auto my-8">
-          <div className="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
-            <ListTodo className="size-6" />
+        <div className="mx-auto my-8 max-w-md space-y-4 rounded-[40px] border border-dashed border-[#7C3AED]/25 bg-white/60 p-10 text-center shadow-clayPressed">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-3xl bg-[#7C3AED]/10 text-[#7C3AED]">
+            <ListTodo className="size-8" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">
+            <h3 className="font-heading text-xl font-extrabold text-[#332F3A]">
               No study targets yet
             </h3>
-            <p className="text-xs text-muted-foreground mt-1">
-              Add your daily study goals to stay focused on upcoming SEE exams and tuition coursework.
+            <p className="mt-1.5 text-sm leading-relaxed text-[#635F69]">
+              Add daily study goals to stay focused on upcoming SEE exams and
+              tuition coursework.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <div className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
             <Button
-              variant="default"
               onClick={handleSeedSampleTasks}
               disabled={isSeeding}
-              className="gap-1.5 shadow-sm w-full sm:w-auto"
+              className="w-full sm:w-auto"
             >
               {isSeeding ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Sparkles className="size-4" />
               )}
-              <span>Load Sample Targets</span>
+              <span>Load sample targets</span>
             </Button>
 
             <TaskFormDialog
               onTaskSaved={fetchTasks}
               triggerButton={
-                <Button variant="outline" className="gap-1.5 w-full sm:w-auto">
+                <Button variant="outline" className="w-full sm:w-auto">
                   <Plus className="size-4" />
-                  <span>Create Custom Target</span>
+                  <span>Create target</span>
                 </Button>
               }
             />
@@ -425,10 +423,12 @@ export function PlannerManager() {
         </div>
       ) : filteredTasks.length === 0 ? (
         /* Filter Empty State */
-        <div className="rounded-2xl border border-dashed border-border p-10 text-center space-y-3 max-w-md mx-auto my-6">
-          <Filter className="size-8 text-muted-foreground mx-auto" />
-          <h3 className="font-medium text-foreground">No matching study targets</h3>
-          <p className="text-xs text-muted-foreground">
+        <div className="mx-auto my-6 max-w-md space-y-3 rounded-[40px] border border-dashed border-[#7C3AED]/25 bg-white/60 p-10 text-center shadow-clayPressed">
+          <Filter className="mx-auto size-9 text-[#635F69]" />
+          <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+            No matching study targets
+          </h3>
+          <p className="text-sm text-[#635F69]">
             {statusFilter === "completed"
               ? "You haven't completed any targets in this view yet."
               : "No targets match your current filter or search."}
@@ -441,12 +441,12 @@ export function PlannerManager() {
               setSearchQuery("");
             }}
           >
-            Show All Targets
+            Show all targets
           </Button>
         </div>
       ) : (
         /* Task List */
-        <div className="space-y-2.5 pt-2">
+        <div className="space-y-3 pt-2">
           {filteredTasks.map((task) => (
             <TaskCard
               key={task.id}

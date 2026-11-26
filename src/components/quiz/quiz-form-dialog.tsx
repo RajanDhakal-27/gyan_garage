@@ -21,7 +21,6 @@ import {
   Plus,
   Trash2,
   CheckCircle2,
-  Circle,
   HelpCircle,
   Loader2,
   Clock,
@@ -284,9 +283,9 @@ export function QuizFormDialog({
       ) : !isControlled ? (
         <DialogTrigger
           render={
-            <Button className="gap-1.5 shadow-sm">
+            <Button>
               <Plus className="size-4" />
-              <span>Create Quiz</span>
+              <span>Create quiz</span>
             </Button>
           }
         />
@@ -294,27 +293,30 @@ export function QuizFormDialog({
 
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{isEditMode ? "Edit Quiz" : "Create Objective Quiz"}</DialogTitle>
+          <DialogTitle>
+            {isEditMode ? "Edit quiz" : "Create objective quiz"}
+          </DialogTitle>
           <DialogDescription>
-            Construct multiple-choice questions, set timer duration, and specify correct answers for auto-scoring.
+            Construct multiple-choice questions, set timer duration and specify
+            correct answers for auto-scoring.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 py-2">
           {/* Metadata Section */}
-          <div className="space-y-4 rounded-xl border bg-muted/20 p-4">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Layers className="size-3.5" />
-              <span>Quiz Details</span>
+          <div className="space-y-4 rounded-[28px] bg-[#EFEBF5] p-5 shadow-clayPressed">
+            <h4 className="flex items-center gap-1.5 font-heading text-xs font-extrabold uppercase tracking-wide text-[#635F69]">
+              <Layers className="size-4" />
+              <span>Quiz details</span>
             </h4>
 
             {/* Title */}
             <div className="space-y-1.5">
               <label
                 htmlFor="quiz_title"
-                className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
               >
-                Quiz Title <span className="text-destructive">*</span>
+                Quiz title <span className="text-[#DB2777]">*</span>
               </label>
               <Input
                 id="quiz_title"
@@ -327,7 +329,7 @@ export function QuizFormDialog({
                 required
               />
               {errors.title && (
-                <p className="text-xs text-destructive">{errors.title}</p>
+                <p className="text-xs font-medium text-[#DB2777]">{errors.title}</p>
               )}
             </div>
 
@@ -337,7 +339,7 @@ export function QuizFormDialog({
               <div className="space-y-1.5">
                 <label
                   htmlFor="quiz_subject"
-                  className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                  className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
                 >
                   Subject
                 </label>
@@ -353,7 +355,7 @@ export function QuizFormDialog({
                       type="button"
                       key={s}
                       onClick={() => setSubject(s)}
-                      className="rounded border border-muted bg-muted/40 px-1.5 py-0.5 text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                      className="cursor-pointer rounded-full border border-white/60 bg-[#EFEBF5] px-3.5 py-1.5 font-heading text-[11px] font-extrabold text-[#635F69] shadow-clayPressed transition-all hover:-translate-y-0.5 hover:text-[#7C3AED]"
                     >
                       {s}
                     </button>
@@ -365,12 +367,12 @@ export function QuizFormDialog({
               <div className="space-y-1.5">
                 <label
                   htmlFor="quiz_duration"
-                  className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                  className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
                 >
-                  Time Limit (Minutes) <span className="text-destructive">*</span>
+                  Time limit (minutes) <span className="text-[#DB2777]">*</span>
                 </label>
                 <div className="relative">
-                  <Clock className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Clock className="absolute left-5 top-1/2 size-4 -translate-y-1/2 text-[#635F69]" />
                   <Input
                     id="quiz_duration"
                     type="number"
@@ -380,11 +382,12 @@ export function QuizFormDialog({
                     onChange={(e) =>
                       setDurationMinutes(Math.max(1, parseInt(e.target.value) || 1))
                     }
-                    className="pl-8"
+                    className="pl-12"
                   />
                 </div>
-                <p className="text-[11px] text-muted-foreground">
-                  Saved as {durationMinutes * 60} seconds timer for student attempts.
+                <p className="text-[11px] text-[#635F69]">
+                  Saved as {durationMinutes * 60} seconds timer for student
+                  attempts.
                 </p>
               </div>
             </div>
@@ -393,7 +396,7 @@ export function QuizFormDialog({
             <div className="space-y-1.5">
               <label
                 htmlFor="quiz_desc"
-                className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
               >
                 Description or Syllabus Coverage (Optional)
               </label>
@@ -411,11 +414,12 @@ export function QuizFormDialog({
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-sm font-bold text-foreground">
+                <h4 className="font-heading text-sm font-extrabold text-[#332F3A]">
                   Multiple-Choice Questions ({questions.length})
                 </h4>
-                <p className="text-xs text-muted-foreground">
-                  Click the radio circle next to an option to designate it as the correct answer.
+                <p className="text-xs text-[#635F69]">
+                  Click the circle next to an option to designate it as the
+                  correct answer.
                 </p>
               </div>
               <Button
@@ -423,15 +427,14 @@ export function QuizFormDialog({
                 variant="outline"
                 size="sm"
                 onClick={addQuestion}
-                className="gap-1.5 text-xs shadow-2xs"
               >
-                <Plus className="size-3.5" />
-                <span>Add Question</span>
+                <Plus className="size-4" />
+                <span>Add question</span>
               </Button>
             </div>
 
             {errors.questions && (
-              <p className="text-xs text-destructive">{errors.questions}</p>
+              <p className="text-xs font-medium text-[#DB2777]">{errors.questions}</p>
             )}
 
             <div className="space-y-4">
@@ -443,23 +446,21 @@ export function QuizFormDialog({
                 return (
                   <div
                     key={q.id || qIndex}
-                    className="rounded-xl border bg-card p-4 space-y-3.5 shadow-2xs relative"
+                    className="relative space-y-3.5 rounded-[28px] border border-white/70 bg-white/70 p-4 shadow-clayCard"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-xs font-semibold">
-                          Q{qIndex + 1}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
+                        <Badge variant="secondary">Q{qIndex + 1}</Badge>
+                        <span className="text-xs text-[#635F69]">
                           Objective MCQ
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1 text-xs">
+                        <div className="flex items-center gap-1.5 text-xs">
                           <label
                             htmlFor={`marks_${qIndex}`}
-                            className="text-muted-foreground font-medium"
+                            className="font-bold text-[#635F69]"
                           >
                             Marks:
                           </label>
@@ -475,7 +476,7 @@ export function QuizFormDialog({
                                 parseInt(e.target.value) || 1
                               )
                             }
-                            className="h-7 w-14 text-center text-xs p-1"
+                            className="h-12 w-16 px-2 py-1 text-center text-xs"
                           />
                         </div>
 
@@ -485,11 +486,11 @@ export function QuizFormDialog({
                             variant="ghost"
                             size="icon-xs"
                             onClick={() => removeQuestion(qIndex)}
-                            className="text-muted-foreground hover:text-destructive"
+                            className="text-[#635F69] hover:bg-[#DB2777]/10 hover:text-[#DB2777]"
                             title="Delete question"
                             aria-label={`Delete question ${qIndex + 1}`}
                           >
-                            <Trash2 className="size-3.5" />
+                            <Trash2 className="size-4" />
                           </Button>
                         )}
                       </div>
@@ -498,20 +499,22 @@ export function QuizFormDialog({
                     {/* Question Prompt */}
                     <div className="space-y-1">
                       <Input
-                        placeholder={`Question ${qIndex + 1} text...`}
+                        placeholder={`Question ${qIndex + 1} text…`}
                         value={q.question}
                         onChange={(e) => updateQuestionPrompt(qIndex, e.target.value)}
-                        className="font-medium text-sm"
+                        className="text-sm font-bold"
                       />
                       {questionError && (
-                        <p className="text-xs text-destructive">{questionError}</p>
+                        <p className="text-xs font-medium text-[#DB2777]">
+                          {questionError}
+                        </p>
                       )}
                     </div>
 
                     {/* Options list */}
                     <div className="space-y-2 pt-1">
-                      <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block">
-                        Options (select correct answer):
+                      <label className="block font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#635F69]">
+                        Options (select correct answer)
                       </label>
 
                       {q.options.map((opt, optIndex) => {
@@ -532,16 +535,16 @@ export function QuizFormDialog({
                                   ? "Marked as correct"
                                   : "Click to set as correct answer"
                               }
-                              className={`flex size-6 shrink-0 items-center justify-center rounded-full border transition-all ${
+                              className={`flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border transition-all ${
                                 isCorrect
-                                  ? "border-emerald-600 bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-300"
-                                  : "border-muted-foreground/30 text-muted-foreground hover:border-primary"
+                                  ? "border-[#10B981]/40 bg-[#10B981]/10 text-[#047857]"
+                                  : "border-white/60 bg-[#EFEBF5] text-[#635F69] shadow-clayPressed hover:text-[#7C3AED]"
                               }`}
                             >
                               {isCorrect ? (
                                 <CheckCircle2 className="size-4" />
                               ) : (
-                                <span className="text-[10px] font-bold">
+                                <span className="font-heading text-[11px] font-extrabold">
                                   {optionLetter}
                                 </span>
                               )}
@@ -557,7 +560,7 @@ export function QuizFormDialog({
                                   e.target.value
                                 )
                               }
-                              className="h-8 text-xs flex-1"
+                              className="h-12 flex-1 text-xs"
                             />
 
                             {q.options.length > 2 && (
@@ -568,9 +571,10 @@ export function QuizFormDialog({
                                 onClick={() =>
                                   removeOptionFromQuestion(qIndex, optIndex)
                                 }
-                                className="text-muted-foreground hover:text-destructive"
+                                className="text-[#635F69] hover:bg-[#DB2777]/10 hover:text-[#DB2777]"
+                                aria-label={`Remove option ${optionLetter}`}
                               >
-                                <Trash2 className="size-3" />
+                                <Trash2 className="size-4" />
                               </Button>
                             )}
                           </div>
@@ -582,33 +586,37 @@ export function QuizFormDialog({
                           <Button
                             type="button"
                             variant="ghost"
-                            size="sm"
+                            size="xs"
                             onClick={() => addOptionToQuestion(qIndex)}
-                            className="h-6 text-xs text-primary gap-1 p-0"
+                            className="text-[#7C3AED]"
                           >
-                            <Plus className="size-3" />
-                            <span>Add Option</span>
+                            <Plus className="size-3.5" />
+                            <span>Add option</span>
                           </Button>
                         )}
 
                         {q.correct_answer ? (
-                          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium ml-auto flex items-center gap-1">
-                            <CheckCircle2 className="size-3" />
+                          <span className="ml-auto flex items-center gap-1 text-[11px] font-bold text-[#047857]">
+                            <CheckCircle2 className="size-3.5" />
                             <span>Answer: {q.correct_answer}</span>
                           </span>
                         ) : (
-                          <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium ml-auto flex items-center gap-1">
-                            <HelpCircle className="size-3" />
+                          <span className="ml-auto flex items-center gap-1 text-[11px] font-bold text-[#B45309]">
+                            <HelpCircle className="size-3.5" />
                             <span>Select a correct option</span>
                           </span>
                         )}
                       </div>
 
                       {optionsError && (
-                        <p className="text-xs text-destructive">{optionsError}</p>
+                        <p className="text-xs font-medium text-[#DB2777]">
+                          {optionsError}
+                        </p>
                       )}
                       {correctError && (
-                        <p className="text-xs text-destructive">{correctError}</p>
+                        <p className="text-xs font-medium text-[#DB2777]">
+                          {correctError}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -626,14 +634,14 @@ export function QuizFormDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="gap-1.5">
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
-                  <span>{isEditMode ? "Saving Quiz..." : "Publishing Quiz..."}</span>
+                  <span>{isEditMode ? "Saving…" : "Publishing…"}</span>
                 </>
               ) : (
-                <span>{isEditMode ? "Save Changes" : "Publish Quiz"}</span>
+                <span>{isEditMode ? "Save changes" : "Publish quiz"}</span>
               )}
             </Button>
           </DialogFooter>

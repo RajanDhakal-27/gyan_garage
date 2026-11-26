@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Loader2, Calendar, Target } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const QUICK_TARGET_SUGGESTIONS = [
@@ -140,22 +140,22 @@ export function TaskFormDialog({
       ) : !isControlled ? (
         <DialogTrigger
           render={
-            <Button className="gap-1.5 shadow-sm">
+            <Button>
               <Plus className="size-4" />
-              <span>Add Target</span>
+              <span>Add target</span>
             </Button>
           }
         />
       ) : null}
 
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
-            {isEditMode ? "Edit Study Target" : "Add Study Target"}
+            {isEditMode ? "Edit study target" : "Add study target"}
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? "Update your study goal, scheduled target date, or notes."
+              ? "Update your study goal, scheduled target date or notes."
               : "Set a personal study target or to-do item to track your preparation."}
           </DialogDescription>
         </DialogHeader>
@@ -165,9 +165,9 @@ export function TaskFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="target_title"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
-              Study Target Title <span className="text-destructive">*</span>
+              Study target title <span className="text-[#DB2777]">*</span>
             </label>
             <Input
               id="target_title"
@@ -180,18 +180,18 @@ export function TaskFormDialog({
               required
             />
             {errors.title && (
-              <p className="text-xs text-destructive">{errors.title}</p>
+              <p className="text-xs font-medium text-[#DB2777]">{errors.title}</p>
             )}
 
             {/* Quick Suggestions */}
             {!isEditMode && (
-              <div className="flex flex-wrap gap-1 pt-1">
+              <div className="flex flex-wrap gap-1.5 pt-1">
                 {QUICK_TARGET_SUGGESTIONS.map((suggestion) => (
                   <button
                     type="button"
                     key={suggestion}
                     onClick={() => setTitle(suggestion)}
-                    className="rounded border border-muted bg-muted/40 px-1.5 py-0.5 text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    className="cursor-pointer rounded-full border border-white/60 bg-[#EFEBF5] px-3.5 py-1.5 font-heading text-[11px] font-extrabold text-[#635F69] shadow-clayPressed transition-all hover:-translate-y-0.5 hover:text-[#7C3AED]"
                   >
                     + {suggestion}
                   </button>
@@ -204,9 +204,9 @@ export function TaskFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="target_date"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
-              Target Completion Date
+              Target completion date
             </label>
             <Input
               id="target_date"
@@ -215,7 +215,9 @@ export function TaskFormDialog({
               onChange={(e) => setTargetDate(e.target.value)}
             />
             {errors.target_date && (
-              <p className="text-xs text-destructive">{errors.target_date}</p>
+              <p className="text-xs font-medium text-[#DB2777]">
+                {errors.target_date}
+              </p>
             )}
           </div>
 
@@ -223,13 +225,13 @@ export function TaskFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="target_desc"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
-              Notes or Steps (Optional)
+              Notes or steps (optional)
             </label>
             <Textarea
               id="target_desc"
-              placeholder="Add specific chapter page numbers or revision steps..."
+              placeholder="Add specific chapter page numbers or revision steps…"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
@@ -245,14 +247,14 @@ export function TaskFormDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="gap-1.5">
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
-                  <span>Saving...</span>
+                  <span>Saving…</span>
                 </>
               ) : (
-                <span>{isEditMode ? "Save Changes" : "Create Target"}</span>
+                <span>{isEditMode ? "Save changes" : "Create target"}</span>
               )}
             </Button>
           </DialogFooter>

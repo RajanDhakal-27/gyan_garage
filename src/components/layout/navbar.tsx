@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/context/role-context";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   BookOpen,
   FileCheck2,
@@ -23,7 +22,7 @@ import { cn } from "cn";
 
 export function Navbar() {
   const pathname = usePathname();
-  const { role, setRole, grade, gradesTaught, isTeacher } = useRole();
+  const { setRole, grade, gradesTaught, isTeacher } = useRole();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const studentLinks = [
@@ -35,25 +34,25 @@ export function Navbar() {
       active: pathname.startsWith("/dashboard"),
     },
     {
-      name: "Learning Library",
+      name: "Library",
       href: "/library",
       icon: BookOpen,
       active: pathname === "/library" || pathname === "/resources",
     },
     {
-      name: "Question Papers",
+      name: "Papers",
       href: "/question-papers",
       icon: FileText,
       active: pathname === "/question-papers",
     },
     {
-      name: "Practice & Quiz",
+      name: "Quiz",
       href: "/quizzes",
       icon: GraduationCap,
       active: pathname.startsWith("/quizzes"),
     },
     {
-      name: "Study Tools",
+      name: "Tools",
       href: "/tools",
       icon: ListTodo,
       active: pathname === "/tools" || pathname === "/planner",
@@ -75,7 +74,7 @@ export function Navbar() {
       active: pathname.startsWith("/dashboard"),
     },
     {
-      name: "Teaching Resources",
+      name: "Resources",
       href: "/library",
       icon: BookOpen,
       active: pathname === "/library" || pathname === "/resources",
@@ -93,13 +92,13 @@ export function Navbar() {
       active: pathname.startsWith("/quizzes"),
     },
     {
-      name: "Question Papers",
+      name: "Papers",
       href: "/question-papers",
       icon: FileText,
       active: pathname === "/question-papers",
     },
     {
-      name: "Study Tools",
+      name: "Tools",
       href: "/tools",
       icon: ListTodo,
       active: pathname === "/tools" || pathname === "/planner",
@@ -118,95 +117,98 @@ export function Navbar() {
     setRole(isTeacher ? "student" : "teacher");
   };
 
-  return (
-    <header className="sticky top-0 z-40 w-full border-b border-[rgba(20,28,43,0.16)] bg-[#EFE9DD]/95 backdrop-blur-xs">
-      {/* Top micro metadata bar */}
-      <div className="hidden sm:flex h-6 items-center justify-between border-b border-[rgba(20,28,43,0.1)] px-6 font-mono text-[10px] text-[#767E8C] uppercase tracking-widest">
-        <span>GYAN GARAGE • EDITORIAL LEARNING ARCHIVE</span>
-        <div className="flex items-center gap-4">
-          <span>KATHMANDU, NEPAL</span>
-          <span>•</span>
-          <span className="text-[#2C4A8F] font-semibold">
-            {isTeacher ? `EDUCATOR DESK (${gradesTaught.length} GRADES)` : `STUDENT DESK (${grade})`}
-          </span>
-        </div>
-      </div>
+  const roleLabel = isTeacher ? "Teacher" : "Student";
+  const contextLabel = isTeacher
+    ? `${gradesTaught.length} grade${gradesTaught.length === 1 ? "" : "s"}`
+    : grade;
 
-      {/* Main navigation container */}
-      <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        {/* Brand */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="flex size-9 items-center justify-center border border-[#141C2B] bg-[#141C2B] text-[#EFE9DD] font-editorial text-lg font-bold transition-transform group-hover:-translate-y-0.5">
-            G
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-editorial text-xl font-bold tracking-tight text-[#141C2B]">
-                GYAN GARAGE
+  return (
+    <header className="sticky top-0 z-40 w-full px-3 pt-3 sm:px-6 sm:pt-4">
+      <div className="mx-auto w-full max-w-7xl rounded-[28px] border border-white/70 bg-white/70 px-3 shadow-clayCard backdrop-blur-2xl sm:px-5">
+        <div className="flex h-16 items-center justify-between gap-3">
+          {/* Brand */}
+          <Link
+            href="/"
+            className="group flex items-center gap-3"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <div className="flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] font-heading text-xl font-black text-white shadow-clayButton transition-transform duration-200 group-hover:-translate-y-0.5">
+              G
+            </div>
+            <div className="leading-tight">
+              <span className="block font-heading text-lg font-black tracking-tight text-[#332F3A] sm:text-xl">
+                Gyan Garage
               </span>
-              <span className="font-mono text-[10px] text-[#767E8C] hidden md:inline">
-                [ज्ञान ग्यारेज]
+              <span className="hidden text-[11px] font-medium text-[#635F69] sm:block">
+                Learn. Practice. Progress.
               </span>
             </div>
-            <p className="font-mono text-[10px] uppercase tracking-wider text-[#4A5364] hidden sm:block">
-              Learn. Practice. Progress.
-            </p>
-          </div>
-        </Link>
+          </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 font-mono text-xs">
-          {currentLinks.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "px-2.5 py-1.5 transition-colors border-b-2",
-                item.active
-                  ? "border-[#2C4A8F] text-[#2C4A8F] font-bold bg-[#E5DED0]/60"
-                  : "border-transparent text-[#4A5364] hover:text-[#141C2B] hover:bg-[#E5DED0]/40"
-              )}
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center gap-1 lg:flex">
+            {currentLinks.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "rounded-full px-3.5 py-2.5 font-heading text-[13px] font-extrabold tracking-tight transition-all duration-200 xl:px-4",
+                  item.active
+                    ? "bg-[#7C3AED]/10 text-[#7C3AED] shadow-clayPressed"
+                    : "text-[#635F69] hover:-translate-y-0.5 hover:bg-[#EFEBF5] hover:text-[#332F3A]"
+                )}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right actions */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={toggleRole}
+              className="flex cursor-pointer items-center gap-2 rounded-full border border-white/70 bg-[#EFEBF5] py-2 pr-3.5 pl-2.5 text-xs shadow-clayPressed transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.96]"
+              title="Switch between Student and Teacher workspace"
             >
-              {item.name}
-            </Link>
-          ))}
-        </nav>
+              <span
+                className={cn(
+                  "size-2.5 rounded-full",
+                  isTeacher ? "bg-[#0EA5E9]" : "bg-[#10B981]"
+                )}
+              />
+              <span className="hidden flex-col items-start leading-tight sm:flex">
+                <span className="font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#332F3A]">
+                  {roleLabel}
+                </span>
+                <span className="text-[10px] text-[#635F69]">{contextLabel}</span>
+              </span>
+              <span className="font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#332F3A] sm:hidden">
+                {roleLabel}
+              </span>
+            </button>
 
-        {/* Right Action: Role Switcher & Profile Quick Action */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Quick Role Toggle Button */}
-          <button
-            type="button"
-            onClick={toggleRole}
-            className="flex items-center gap-1.5 border border-[rgba(20,28,43,0.2)] bg-[#E5DED0] px-2.5 py-1 font-mono text-[11px] text-[#141C2B] hover:border-[#2C4A8F] transition-colors cursor-pointer"
-            title="Click to switch between Student and Teacher workspace"
-          >
-            <span className="text-[10px] uppercase text-[#767E8C]">ROLE:</span>
-            <span className="font-bold text-[#2C4A8F] uppercase">
-              {isTeacher ? "Teacher" : "Student"}
-            </span>
-          </button>
-
-          {/* Mobile Menu Toggle */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden flex size-9 items-center justify-center border border-[rgba(20,28,43,0.2)] bg-[#EFE9DD] text-[#141C2B]"
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="flex size-11 items-center justify-center rounded-2xl border border-white/60 bg-[#EFEBF5] text-[#332F3A] shadow-clayPressed transition-all duration-200 hover:bg-white/80 active:scale-[0.94] lg:hidden"
+              aria-label="Toggle navigation menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-[rgba(20,28,43,0.16)] bg-[#EFE9DD] px-4 py-4 space-y-2">
-          <div className="p-2 border-b border-[rgba(20,28,43,0.12)] font-mono text-[10px] text-[#767E8C] uppercase tracking-wider">
-            {isTeacher ? "Teacher Navigation" : "Student Navigation"}
+        <div className="mx-auto mt-2 w-full max-w-7xl rounded-[28px] border border-white/70 bg-white/85 p-3 shadow-clayDeep backdrop-blur-2xl lg:hidden">
+          <div className="px-3 pt-1 pb-3 font-heading text-[11px] font-extrabold uppercase tracking-wider text-[#635F69]">
+            {isTeacher ? "Teacher navigation" : "Student navigation"}
           </div>
 
-          <div className="grid grid-cols-1 gap-1 font-mono text-xs">
+          <div className="grid grid-cols-1 gap-1.5">
             {currentLinks.map((item) => {
               const Icon = item.icon;
               return (
@@ -215,24 +217,31 @@ export function Navbar() {
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center justify-between p-2.5 border transition-colors",
+                    "flex items-center justify-between rounded-2xl p-3 transition-all duration-200",
                     item.active
-                      ? "border-[#2C4A8F] bg-[#2C4A8F] text-[#EFE9DD] font-bold"
-                      : "border-[rgba(20,28,43,0.12)] bg-[#E5DED0]/40 text-[#141C2B] hover:bg-[#E5DED0]"
+                      ? "bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clayButton"
+                      : "text-[#332F3A] hover:bg-[#EFEBF5] active:scale-[0.98]"
                   )}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <Icon className="size-4" />
-                    <span>{item.name}</span>
+                  <div className="flex items-center gap-3">
+                    <Icon className="size-5" />
+                    <span className="font-heading text-sm font-bold">
+                      {item.name}
+                    </span>
                   </div>
-                  <ArrowRight className="size-3.5 opacity-60" />
+                  <ArrowRight className="size-4 opacity-60" />
                 </Link>
               );
             })}
           </div>
 
-          <div className="pt-3 border-t border-[rgba(20,28,43,0.12)] flex items-center justify-between">
-            <span className="font-mono text-xs text-[#767E8C]">Active View:</span>
+          <div className="mt-3 flex items-center justify-between gap-3 border-t border-[#7C3AED]/10 px-2 pt-3">
+            <span className="text-xs text-[#635F69]">
+              Viewing as{" "}
+              <span className="font-heading font-extrabold text-[#332F3A]">
+                {roleLabel}
+              </span>
+            </span>
             <Button
               variant="outline"
               size="sm"
@@ -240,9 +249,8 @@ export function Navbar() {
                 toggleRole();
                 setMobileMenuOpen(false);
               }}
-              className="text-xs"
             >
-              Switch to {isTeacher ? "Student" : "Teacher"} View
+              Switch to {isTeacher ? "Student" : "Teacher"}
             </Button>
           </div>
         </div>

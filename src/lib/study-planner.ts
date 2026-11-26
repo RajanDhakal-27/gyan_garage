@@ -59,7 +59,7 @@ export function formatTargetDate(
   if (!target_date) {
     return {
       label: "No date set",
-      badgeClass: "text-muted-foreground bg-muted/40 border-muted",
+      badgeClass: "bg-[#EFEBF5] text-[#635F69] border-white/60",
       isOverdue: false,
     };
   }
@@ -68,7 +68,7 @@ export function formatTargetDate(
   if (isNaN(target.getTime())) {
     return {
       label: "Invalid date",
-      badgeClass: "text-muted-foreground bg-muted/40 border-muted",
+      badgeClass: "bg-[#EFEBF5] text-[#635F69] border-white/60",
       isOverdue: false,
     };
   }
@@ -81,7 +81,7 @@ export function formatTargetDate(
   if (!now) {
     return {
       label: formattedMonthDay,
-      badgeClass: "text-muted-foreground bg-muted/40 border-muted",
+      badgeClass: "bg-[#EFEBF5] text-[#635F69] border-white/60",
       isOverdue: false,
     };
   }
@@ -101,7 +101,7 @@ export function formatTargetDate(
     return {
       label: overdueDays === 1 ? "Overdue (Yesterday)" : `Overdue by ${overdueDays}d`,
       badgeClass:
-        "border-red-200 bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800",
+        "bg-[#DB2777]/10 text-[#DB2777] border-[#DB2777]/25",
       isOverdue: true,
     };
   }
@@ -110,7 +110,7 @@ export function formatTargetDate(
     return {
       label: "Target: Today",
       badgeClass:
-        "border-amber-200 bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800 font-medium",
+        "bg-[#F59E0B]/10 text-[#B45309] border-[#F59E0B]/25",
       isOverdue: false,
     };
   }
@@ -119,7 +119,7 @@ export function formatTargetDate(
     return {
       label: "Target: Tomorrow",
       badgeClass:
-        "border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800 font-medium",
+        "bg-[#0EA5E9]/10 text-[#0284C7] border-[#0EA5E9]/20",
       isOverdue: false,
     };
   }
@@ -127,7 +127,7 @@ export function formatTargetDate(
   return {
     label: formattedMonthDay,
     badgeClass:
-      "border-border bg-card text-foreground dark:border-zinc-800",
+      "bg-white/60 text-[#332F3A] border-white/70",
     isOverdue: false,
   };
 }

@@ -30,8 +30,6 @@ import {
   AlertCircle,
   Sparkles,
   Loader2,
-  Clock,
-  Layers,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -151,24 +149,24 @@ export function QuizManager() {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-6">
+    <div className="mx-auto max-w-7xl space-y-7 px-4 py-4 sm:px-6">
       {/* Header Banner */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b pb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Objective Quizzes & Tests
-            </h1>
-            <Badge variant="outline" className="hidden sm:inline-flex">
-              Task 03 • Must 3
-            </Badge>
+      <div className="flex flex-col gap-5 rounded-[36px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary">Practice arena</Badge>
+            <Badge variant="outline">Timed · Auto-graded</Badge>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Construct and browse multiple-choice timed tests for SEE and high school preparation.
+          <h1 className="font-heading text-3xl font-black tracking-tight text-[#332F3A] sm:text-4xl">
+            Objective Quizzes & Tests
+          </h1>
+          <p className="max-w-2xl text-sm leading-relaxed text-[#635F69]">
+            Build and browse multiple-choice timed tests for SEE and high school
+            preparation.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex flex-wrap items-center gap-2">
           {isTeacher ? (
             <QuizFormDialog onQuizSaved={fetchQuizzes} />
           ) : (
@@ -176,10 +174,9 @@ export function QuizManager() {
               variant="outline"
               size="sm"
               onClick={() => setRole("teacher")}
-              className="gap-1.5 text-xs"
             >
-              <Plus className="size-3.5" />
-              <span>Switch to Teacher to Create</span>
+              <Plus className="size-4" />
+              <span>Switch to teacher</span>
             </Button>
           )}
 
@@ -189,26 +186,25 @@ export function QuizManager() {
               size="sm"
               onClick={handleSeedSampleQuizzes}
               disabled={isSeeding}
-              className="gap-1.5 text-xs"
             >
               {isSeeding ? (
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <Sparkles className="size-3.5 text-amber-500" />
+                <Sparkles className="size-4 text-[#F59E0B]" />
               )}
-              <span>Load Sample Quizzes</span>
+              <span>Load samples</span>
             </Button>
           )}
 
           <Button
             variant="ghost"
-            size="icon"
+            size="icon-sm"
             onClick={fetchQuizzes}
             disabled={isLoading}
             title="Refresh quizzes"
             aria-label="Refresh quizzes"
           >
-            <RefreshCw className={isLoading ? "size-4 animate-spin" : "size-4"} />
+            <RefreshCw className={isLoading ? "size-5 animate-spin" : "size-5"} />
           </Button>
         </div>
       </div>
@@ -217,20 +213,20 @@ export function QuizManager() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+          <Search className="pointer-events-none absolute left-5 top-1/2 size-4 -translate-y-1/2 text-[#635F69]" />
           <Input
             placeholder="Search quizzes by title or syllabus..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 pr-8"
+            className="pl-12 pr-12"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-[#635F69] hover:text-[#332F3A]"
               aria-label="Clear search"
             >
-              <X className="size-3.5" />
+              <X className="size-4" />
             </button>
           )}
         </div>
@@ -257,94 +253,96 @@ export function QuizManager() {
       </div>
 
       {/* Filter Badges & Counter */}
-      <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex flex-col items-start justify-between gap-2 text-xs text-[#635F69] sm:flex-row sm:items-center">
+        <div className="flex flex-wrap items-center gap-2">
           <span>
-            Showing <strong className="text-foreground">{filteredQuizzes.length}</strong> of{" "}
+            Showing <strong className="text-[#332F3A]">{filteredQuizzes.length}</strong> of{" "}
             {quizzes.length} quizzes
           </span>
           {hasActiveFilters && (
             <Button
               variant="link"
-              size="sm"
+              size="xs"
               onClick={clearFilters}
-              className="h-auto p-0 text-xs text-primary"
+              className="h-auto px-0 text-[#7C3AED]"
             >
               Reset all filters
             </Button>
           )}
         </div>
         <div className="text-[11px]">
-          Current Mode:{" "}
-          <strong className="text-foreground">
-            {isTeacher ? "Teacher (Create & Manage)" : "Student (Catalog & Practice)"}
+          Mode:{" "}
+          <strong className="text-[#332F3A]">
+            {isTeacher ? "Teacher · create & manage" : "Student · catalog & practice"}
           </strong>
         </div>
       </div>
 
       {/* Main Content Area */}
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+        <div className="grid grid-cols-1 gap-5 pt-2 md:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-48 rounded-xl border border-muted bg-muted/20 animate-pulse p-4 flex flex-col justify-between"
+              className="flex h-52 animate-pulse flex-col justify-between rounded-[32px] border border-white/60 bg-white/40 p-5 shadow-clayPressed"
             >
-              <div className="space-y-2">
-                <div className="h-4 w-24 bg-muted/60 rounded" />
-                <div className="h-5 w-3/4 bg-muted/60 rounded" />
-                <div className="h-10 w-full bg-muted/40 rounded" />
+              <div className="space-y-3">
+                <div className="h-5 w-24 rounded-full bg-[#0EA5E9]/10" />
+                <div className="h-6 w-3/4 rounded-full bg-[#0EA5E9]/10" />
+                <div className="h-10 w-full rounded-2xl bg-[#0EA5E9]/5" />
               </div>
-              <div className="h-6 w-28 bg-muted/40 rounded self-end" />
+              <div className="h-7 w-28 self-end rounded-full bg-[#0EA5E9]/10" />
             </div>
           ))}
         </div>
       ) : error ? (
-        <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-8 text-center space-y-3">
-          <AlertCircle className="size-8 text-destructive mx-auto" />
-          <h3 className="font-semibold text-destructive">Failed to load quizzes</h3>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">{error}</p>
-          <Button variant="outline" size="sm" onClick={fetchQuizzes} className="gap-1.5">
-            <RefreshCw className="size-3.5" />
-            <span>Try Again</span>
+        <div className="space-y-3 rounded-[32px] border border-[#DB2777]/20 bg-[#DB2777]/5 p-10 text-center">
+          <AlertCircle className="mx-auto size-9 text-[#DB2777]" />
+          <h3 className="font-heading text-lg font-extrabold text-[#DB2777]">
+            Failed to load quizzes
+          </h3>
+          <p className="mx-auto max-w-md text-sm text-[#635F69]">{error}</p>
+          <Button variant="outline" size="sm" onClick={fetchQuizzes}>
+            <RefreshCw className="size-4" />
+            <span>Try again</span>
           </Button>
         </div>
       ) : quizzes.length === 0 ? (
         /* Empty Database State */
-        <div className="rounded-2xl border border-dashed border-border p-12 text-center space-y-4 max-w-xl mx-auto my-8">
-          <div className="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
-            <GraduationCap className="size-6" />
+        <div className="mx-auto my-8 max-w-xl space-y-4 rounded-[40px] border border-dashed border-[#0EA5E9]/25 bg-white/60 p-12 text-center shadow-clayPressed">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-3xl bg-[#0EA5E9]/10 text-[#0EA5E9]">
+            <GraduationCap className="size-8" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">
+            <h3 className="font-heading text-xl font-extrabold text-[#332F3A]">
               No quizzes published yet
             </h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              Teachers can build multiple-choice objective tests with timers. Or load sample Nepali curriculum quizzes with one click.
+            <p className="mt-1.5 text-sm leading-relaxed text-[#635F69]">
+              Teachers can build multiple-choice objective tests with timers — or
+              load sample Nepali curriculum quizzes in one click.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <div className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
             <Button
-              variant="default"
               onClick={handleSeedSampleQuizzes}
               disabled={isSeeding}
-              className="gap-1.5 shadow-sm w-full sm:w-auto"
+              className="w-full sm:w-auto"
             >
               {isSeeding ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Sparkles className="size-4" />
               )}
-              <span>Load Sample Quizzes</span>
+              <span>Load sample quizzes</span>
             </Button>
 
             {isTeacher ? (
               <QuizFormDialog
                 onQuizSaved={fetchQuizzes}
                 triggerButton={
-                  <Button variant="outline" className="gap-1.5 w-full sm:w-auto">
+                  <Button variant="outline" className="w-full sm:w-auto">
                     <Plus className="size-4" />
-                    <span>Create Custom Quiz</span>
+                    <span>Create quiz</span>
                   </Button>
                 }
               />
@@ -352,20 +350,22 @@ export function QuizManager() {
               <Button
                 variant="outline"
                 onClick={() => setRole("teacher")}
-                className="gap-1.5 w-full sm:w-auto"
+                className="w-full sm:w-auto"
               >
                 <GraduationCap className="size-4" />
-                <span>Switch to Teacher View</span>
+                <span>Switch to teacher</span>
               </Button>
             )}
           </div>
         </div>
       ) : filteredQuizzes.length === 0 ? (
         /* Filter Empty State */
-        <div className="rounded-2xl border border-dashed border-border p-10 text-center space-y-3 max-w-md mx-auto my-8">
-          <Filter className="size-8 text-muted-foreground mx-auto" />
-          <h3 className="font-medium text-foreground">No quizzes match your filter</h3>
-          <p className="text-xs text-muted-foreground">
+        <div className="mx-auto my-8 max-w-md space-y-3 rounded-[40px] border border-dashed border-[#0EA5E9]/25 bg-white/60 p-10 text-center shadow-clayPressed">
+          <Filter className="mx-auto size-9 text-[#635F69]" />
+          <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+            No quizzes match your filter
+          </h3>
+          <p className="text-sm text-[#635F69]">
             Try adjusting your search query or subject filter.
           </p>
           <Button variant="outline" size="sm" onClick={clearFilters}>
@@ -374,7 +374,7 @@ export function QuizManager() {
         </div>
       ) : (
         /* Quizzes Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+        <div className="grid grid-cols-1 gap-5 pt-2 md:grid-cols-2 lg:grid-cols-3">
           {filteredQuizzes.map((item) => (
             <QuizCard
               key={item.id}

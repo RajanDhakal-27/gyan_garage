@@ -4,7 +4,6 @@ import React, { useState, useEffect, useMemo, useCallback, Suspense } from "reac
 import { supabase } from "@/lib/supabase";
 import { LearningItem } from "@/types/database";
 import { useRole } from "@/context/role-context";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -19,15 +18,10 @@ import {
 import {
   FileText,
   Search,
-  ExternalLink,
   Plus,
   RefreshCw,
   Sparkles,
-  Download,
   Copy,
-  Calendar,
-  Layers,
-  BookOpen,
   Loader2,
   Trash2,
 } from "lucide-react";
@@ -225,75 +219,82 @@ function QuestionPapersContent() {
   }, [papers, searchQuery, selectedSubject]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl space-y-7">
         {/* Header */}
-        <div className="border-b border-border/80 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex flex-col justify-between gap-5 rounded-[36px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl sm:p-8 lg:flex-row lg:items-center">
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs uppercase tracking-widest text-primary font-semibold">
-                Official Examination Vault
-              </span>
-              <span className="text-border">/</span>
-              <span className="font-mono text-xs text-muted-foreground">Past Papers & Model Sets</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="secondary">Examination vault</Badge>
+              <Badge variant="outline">Past papers · Model sets</Badge>
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
+            <h1 className="font-heading text-3xl font-black tracking-tight text-[#332F3A] sm:text-4xl">
               Question Papers Archive
             </h1>
-            <p className="font-mono text-xs sm:text-sm text-muted-foreground max-w-3xl">
-              Authentic terminal examinations, board model question sets, and assessment rubrics for rigorous exam readiness.
+            <p className="max-w-2xl text-sm leading-relaxed text-[#635F69]">
+              Authentic terminal examinations, board model question sets and
+              assessment rubrics for rigorous exam readiness.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {papers.length === 0 && !isLoading && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleSeed}
                 disabled={isSeeding}
-                className="font-mono text-xs gap-1.5"
               >
-                {isSeeding ? <Loader2 className="size-3.5 animate-spin" /> : <Sparkles className="size-3.5" />}
-                Seed Model Sets
+                {isSeeding ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Sparkles className="size-4 text-[#F59E0B]" />
+                )}
+                <span>Load samples</span>
               </Button>
             )}
             {isTeacher && (
-              <Button
-                size="sm"
-                onClick={() => setIsAddOpen(true)}
-                className="font-mono text-xs gap-1.5"
-              >
-                <Plus className="size-3.5" />
-                Archive Question Paper
+              <Button size="sm" onClick={() => setIsAddOpen(true)}>
+                <Plus className="size-4" />
+                Archive paper
               </Button>
             )}
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={fetchPapers}
+              disabled={isLoading}
+              title="Refresh papers"
+              aria-label="Refresh papers"
+            >
+              <RefreshCw className={isLoading ? "size-5 animate-spin" : "size-5"} />
+            </Button>
           </div>
         </div>
 
         {/* Filter Bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+            <Search className="pointer-events-none absolute left-5 top-1/2 size-4 -translate-y-1/2 text-[#635F69]" />
             <Input
-              placeholder="Search by paper title, curriculum topic, year..."
+              placeholder="Search by paper title, curriculum topic, year…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 font-mono text-xs bg-card"
+              className="pl-12 pr-5 text-sm"
             />
           </div>
 
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
             {subjects.map((sub) => (
               <button
                 key={sub}
                 type="button"
                 onClick={() => setSelectedSubject(sub)}
                 className={cn(
-                  "px-3 py-1.5 text-xs font-mono transition-colors shrink-0 border",
+                  "shrink-0 cursor-pointer rounded-full px-4 py-2 font-heading text-xs font-extrabold transition-all duration-200",
                   selectedSubject === sub
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-card text-foreground border-border/80 hover:border-primary/50"
+                    ? "bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clayButton"
+                    : "border border-white/70 bg-white/60 text-[#635F69] shadow-clayPressed hover:-translate-y-0.5 hover:text-[#7C3AED]"
                 )}
               >
                 {sub}
@@ -304,17 +305,22 @@ function QuestionPapersContent() {
 
         {/* Question Papers List */}
         {isLoading ? (
-          <div className="p-12 text-center text-muted-foreground font-mono text-xs flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-2 rounded-[32px] border border-white/60 bg-white/40 p-12 text-xs text-[#635F69] shadow-clayPressed">
             <Loader2 className="size-4 animate-spin" />
-            Opening examination archive...
+            Opening examination archive…
           </div>
         ) : filteredPapers.length === 0 ? (
-          <div className="border border-border/80 bg-card p-12 text-center space-y-4">
-            <FileText className="size-8 mx-auto text-muted-foreground" />
+          <div className="mx-auto max-w-md space-y-4 rounded-[40px] border border-dashed border-[#7C3AED]/25 bg-white/60 p-10 text-center shadow-clayPressed">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-3xl bg-[#7C3AED]/10 text-[#7C3AED]">
+              <FileText className="size-8" />
+            </div>
             <div className="space-y-1">
-              <h3 className="font-serif text-lg font-medium">No question papers located</h3>
-              <p className="font-mono text-xs text-muted-foreground">
-                No matching model question papers or past examination sets found.
+              <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+                No question papers located
+              </h3>
+              <p className="text-sm text-[#635F69]">
+                No matching model question papers or past examination sets
+                found.
               </p>
             </div>
             {papers.length === 0 && (
@@ -323,77 +329,78 @@ function QuestionPapersContent() {
                 size="sm"
                 onClick={handleSeed}
                 disabled={isSeeding}
-                className="font-mono text-xs gap-1.5"
               >
-                <Sparkles className="size-3.5" />
-                Load Official Model Papers
+                <Sparkles className="size-4 text-[#F59E0B]" />
+                Load official model papers
               </Button>
             )}
           </div>
         ) : (
-          <div className="divide-y divide-border/60 border border-border/80 bg-card">
+          <div className="space-y-3">
             {filteredPapers.map((paper, index) => (
               <div
                 key={paper.id}
-                className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-muted/30 transition-colors"
+                className="flex flex-col justify-between gap-4 rounded-[32px] border border-white/70 bg-white/70 p-5 shadow-clayCard backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-clayDeep sm:flex-row sm:items-center"
               >
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono text-xs text-primary font-bold">
-                      {String(index + 1).padStart(2, "0")}.
+                <div className="flex-1 space-y-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-heading text-xs font-extrabold text-[#7C3AED]">
+                      {String(index + 1).padStart(2, "0")}
                     </span>
-                    <Badge variant="outline" className="font-mono text-xs">
+                    <Badge variant="outline">
                       {paper.subject || "Examination"}
                     </Badge>
-                    <Badge variant="secondary" className="font-mono text-[10px]">
-                      Model Set
-                    </Badge>
+                    <Badge variant="secondary">Model set</Badge>
                   </div>
 
-                  <h3 className="font-serif text-lg font-medium text-foreground">
+                  <h3 className="font-heading text-lg font-extrabold leading-snug text-[#332F3A]">
                     {paper.title}
                   </h3>
 
                   {paper.topic && (
-                    <p className="font-mono text-xs text-muted-foreground">
-                      <span className="text-foreground font-medium">Coverage:</span> {paper.topic}
+                    <p className="text-xs text-[#635F69]">
+                      <span className="font-bold text-[#332F3A]">Coverage:</span>{" "}
+                      {paper.topic}
                     </p>
                   )}
 
                   {paper.description && (
-                    <p className="font-mono text-xs text-secondary-ink line-clamp-2">
+                    <p className="line-clamp-2 text-xs leading-relaxed text-[#635F69]">
                       {paper.description}
                     </p>
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 sm:self-center shrink-0">
+                <div className="flex shrink-0 items-center gap-2">
                   {paper.external_url ? (
                     <a
                       href={paper.external_url}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Button size="sm" className="font-mono text-xs gap-1.5">
-                        <FileText className="size-3.5" />
-                        View Paper
+                      <Button size="sm">
+                        <FileText className="size-4" />
+                        View paper
                       </Button>
                     </a>
                   ) : (
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => toast.info("Physical examination paper cataloged in academic library.")}
-                      className="font-mono text-xs gap-1.5"
+                      onClick={() =>
+                        toast.info(
+                          "Physical examination paper cataloged in academic library."
+                        )
+                      }
                     >
-                      <FileText className="size-3.5" />
-                      Paper Details
+                      <FileText className="size-4" />
+                      Paper details
                     </Button>
                   )}
 
                   <Button
                     variant="ghost"
-                    size="icon-xs"
+                    size="icon-sm"
                     onClick={() => {
                       if (paper.external_url) {
                         navigator.clipboard.writeText(paper.external_url);
@@ -404,19 +411,21 @@ function QuestionPapersContent() {
                       }
                     }}
                     title="Copy link"
+                    aria-label="Copy paper link"
                   >
-                    <Copy className="size-3.5 text-muted-foreground" />
+                    <Copy className="size-4" />
                   </Button>
 
                   {isTeacher && (
                     <Button
                       variant="ghost"
-                      size="icon-xs"
+                      size="icon-sm"
                       onClick={() => handleDelete(paper.id, paper.title)}
-                      className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      className="text-[#635F69] hover:bg-[#DB2777]/10 hover:text-[#DB2777]"
                       title="Delete paper"
+                      aria-label={`Delete ${paper.title}`}
                     >
-                      <Trash2 className="size-3.5" />
+                      <Trash2 className="size-4" />
                     </Button>
                   )}
                 </div>
@@ -427,79 +436,94 @@ function QuestionPapersContent() {
 
         {/* Teacher Add Paper Dialog */}
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-          <DialogContent className="border-border/80 bg-background max-w-lg">
+          <DialogContent className="sm:max-w-lg">
             <DialogHeader>
-              <DialogTitle className="font-serif text-2xl font-medium">
-                Archive Question Paper
-              </DialogTitle>
-              <DialogDescription className="font-mono text-xs text-muted-foreground">
-                Catalog an official board question paper, mock set, or unit evaluation paper.
+              <DialogTitle>Archive question paper</DialogTitle>
+              <DialogDescription>
+                Catalog an official board question paper, mock set or unit
+                evaluation paper.
               </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handleAddPaper} className="space-y-4 pt-2">
-              <div className="space-y-1.5">
-                <label className="font-mono text-xs font-semibold text-foreground">
-                  Paper Title *
+              <div className="space-y-2">
+                <label
+                  htmlFor="paper-title"
+                  className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
+                >
+                  Paper title *
                 </label>
                 <Input
+                  id="paper-title"
                   required
                   placeholder="e.g. Class 10 Compulsory Mathematics Model Set 2080"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="font-mono text-xs bg-card"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <label className="font-mono text-xs font-semibold text-foreground">
+                <div className="space-y-2">
+                  <label
+                    htmlFor="paper-subject"
+                    className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
+                  >
                     Subject *
                   </label>
                   <Input
+                    id="paper-subject"
                     required
                     placeholder="e.g. Mathematics"
                     value={newSubject}
                     onChange={(e) => setNewSubject(e.target.value)}
-                    className="font-mono text-xs bg-card"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <label className="font-mono text-xs font-semibold text-foreground">
-                    Curriculum Topic
+                <div className="space-y-2">
+                  <label
+                    htmlFor="paper-topic"
+                    className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
+                  >
+                    Curriculum topic
                   </label>
                   <Input
-                    placeholder="e.g. Full Syllabus / SEE Prep"
+                    id="paper-topic"
+                    placeholder="e.g. Full syllabus"
                     value={newTopic}
                     onChange={(e) => setNewTopic(e.target.value)}
-                    className="font-mono text-xs bg-card"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="font-mono text-xs font-semibold text-foreground">
-                  PDF / Document Link
+              <div className="space-y-2">
+                <label
+                  htmlFor="paper-url"
+                  className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
+                >
+                  PDF / document link
                 </label>
                 <Input
+                  id="paper-url"
                   type="url"
                   placeholder="https://example.com/question-paper.pdf"
                   value={newUrl}
                   onChange={(e) => setNewUrl(e.target.value)}
-                  className="font-mono text-xs bg-card"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="font-mono text-xs font-semibold text-foreground">
-                  Description & Rubrics
+              <div className="space-y-2">
+                <label
+                  htmlFor="paper-description"
+                  className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
+                >
+                  Description & rubrics
                 </label>
                 <textarea
+                  id="paper-description"
                   rows={3}
-                  placeholder="Time limit: 3 hours. Marks breakdown, instructions, and reference keys..."
+                  placeholder="Time limit: 3 hours. Marks breakdown, instructions and reference keys…"
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  className="w-full border border-border/80 bg-card p-2 font-mono text-xs rounded-none focus:outline-none focus:border-primary text-foreground"
+                  className="w-full rounded-2xl border border-white/60 bg-[#EFEBF5] px-5 py-4 text-sm text-[#332F3A] shadow-clayPressed outline-none transition-shadow placeholder:text-[#635F69]/70 focus-visible:ring-2 focus-visible:ring-[#7C3AED]/30"
                 />
               </div>
 
@@ -508,17 +532,12 @@ function QuestionPapersContent() {
                   type="button"
                   variant="outline"
                   onClick={() => setIsAddOpen(false)}
-                  className="font-mono text-xs"
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="font-mono text-xs gap-1.5"
-                >
-                  {isSubmitting && <Loader2 className="size-3.5 animate-spin" />}
-                  Save Question Paper
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting && <Loader2 className="size-4 animate-spin" />}
+                  Save question paper
                 </Button>
               </DialogFooter>
             </form>
@@ -533,8 +552,8 @@ export default function QuestionPapersPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[60vh] flex items-center justify-center">
-          <Loader2 className="size-6 animate-spin text-muted-foreground" />
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <Loader2 className="size-8 animate-spin text-[#7C3AED]" />
         </div>
       }
     >

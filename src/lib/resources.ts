@@ -117,14 +117,14 @@ export function extractTopics(
 export function getResourceBadgeColor(resourceType?: string | null): string {
   switch (resourceType?.toLowerCase()) {
     case "video lesson":
-      return "bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-300 border-red-200 dark:border-red-900";
+      return "bg-[#DB2777]/10 text-[#DB2777] border-[#DB2777]/20";
     case "meeting link":
-      return "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border-blue-200 dark:border-blue-900";
+      return "bg-[#0EA5E9]/10 text-[#0284C7] border-[#0EA5E9]/20";
     case "question paper":
-      return "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 border-amber-200 dark:border-amber-900";
+      return "bg-[#F59E0B]/10 text-[#B45309] border-[#F59E0B]/25";
     case "notes":
-      return "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900";
+      return "bg-[#10B981]/10 text-[#047857] border-[#10B981]/20";
     default:
-      return "bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200 border-zinc-200 dark:border-zinc-700";
+      return "bg-[#7C3AED]/10 text-[#7C3AED] border-[#7C3AED]/20";
   }
 }

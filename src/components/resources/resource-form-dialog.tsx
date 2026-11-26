@@ -169,23 +169,23 @@ export function ResourceFormDialog({
       ) : !isControlled ? (
         <DialogTrigger
           render={
-            <Button className="gap-1.5 shadow-sm">
+            <Button>
               <Plus className="size-4" />
-              <span>Add Resource</span>
+              <span>Add resource</span>
             </Button>
           }
         />
       ) : null}
 
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
-            {isEditMode ? "Edit Learning Resource" : "Add Learning Resource"}
+            {isEditMode ? "Edit learning resource" : "Add learning resource"}
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? "Update resource details, subject tags, or external links."
-              : "Publish notes, question papers, video lessons, or online meeting links."}
+              ? "Update resource details, subject tags or external links."
+              : "Publish notes, question papers, video lessons or online meeting links."}
           </DialogDescription>
         </DialogHeader>
 
@@ -194,9 +194,9 @@ export function ResourceFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="title"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
-              Title <span className="text-destructive">*</span>
+              Title <span className="text-[#DB2777]">*</span>
             </label>
             <Input
               id="title"
@@ -209,7 +209,7 @@ export function ResourceFormDialog({
               required
             />
             {errors.title && (
-              <p className="text-xs text-destructive">{errors.title}</p>
+              <p className="text-xs font-medium text-[#DB2777]">{errors.title}</p>
             )}
           </div>
 
@@ -217,7 +217,7 @@ export function ResourceFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="resource_type"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
               Resource Type
             </label>
@@ -244,7 +244,7 @@ export function ResourceFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="subject"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
               Subject
             </label>
@@ -260,7 +260,7 @@ export function ResourceFormDialog({
                   type="button"
                   key={s}
                   onClick={() => setSubject(s)}
-                  className="rounded border border-muted bg-muted/40 px-1.5 py-0.5 text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className="cursor-pointer rounded-full border border-white/60 bg-[#EFEBF5] px-3.5 py-1.5 font-heading text-[11px] font-extrabold text-[#635F69] shadow-clayPressed transition-all hover:-translate-y-0.5 hover:text-[#7C3AED]"
                 >
                   {s}
                 </button>
@@ -272,7 +272,7 @@ export function ResourceFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="topic"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
               Topic / Chapter
             </label>
@@ -288,7 +288,7 @@ export function ResourceFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="external_url"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
               External URL
             </label>
@@ -305,7 +305,9 @@ export function ResourceFormDialog({
               }}
             />
             {errors.external_url && (
-              <p className="text-xs text-destructive">{errors.external_url}</p>
+              <p className="text-xs font-medium text-[#DB2777]">
+                {errors.external_url}
+              </p>
             )}
           </div>
 
@@ -313,7 +315,7 @@ export function ResourceFormDialog({
           <div className="space-y-1.5">
             <label
               htmlFor="description"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
             >
               Description & Notes
             </label>
@@ -335,14 +337,14 @@ export function ResourceFormDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="gap-1.5">
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
-                  <span>{isEditMode ? "Saving..." : "Publishing..."}</span>
+                  <span>{isEditMode ? "Saving…" : "Publishing…"}</span>
                 </>
               ) : (
-                <span>{isEditMode ? "Save Changes" : "Publish Resource"}</span>
+                <span>{isEditMode ? "Save changes" : "Publish resource"}</span>
               )}
             </Button>
           </DialogFooter>

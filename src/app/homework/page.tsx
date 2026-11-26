@@ -11,11 +11,14 @@ export default function HomeworkPage() {
   return (
     <Suspense
       fallback={
-        <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6">
-          <div className="h-8 w-48 bg-muted rounded animate-pulse mb-6" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+          <div className="mb-6 h-10 w-52 animate-pulse rounded-full bg-[#EFEBF5]" />
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-44 rounded-xl bg-muted/20 animate-pulse border" />
+              <div
+                key={i}
+                className="h-48 animate-pulse rounded-[32px] border border-white/60 bg-white/40 shadow-clayPressed"
+              />
             ))}
           </div>
         </div>

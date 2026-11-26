@@ -34,7 +34,6 @@ import {
   AlertCircle,
   GraduationCap,
   Sparkles,
-  Database,
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -171,24 +170,24 @@ export function ResourceManager() {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-6">
+    <div className="mx-auto max-w-7xl space-y-7 px-4 py-4 sm:px-6">
       {/* Header Banner */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b pb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Learning Resource Library
-            </h1>
-            <Badge variant="outline" className="hidden sm:inline-flex">
-              Task 01 • Must 2
-            </Badge>
+      <div className="flex flex-col gap-5 rounded-[36px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary">Resource archive</Badge>
+            <Badge variant="outline">Notes · Papers · Videos</Badge>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Explore notes, past question papers, video lectures, and live class links for Nepali curriculum.
+          <h1 className="font-heading text-3xl font-black tracking-tight text-[#332F3A] sm:text-4xl">
+            Learning Resource Library
+          </h1>
+          <p className="max-w-2xl text-sm leading-relaxed text-[#635F69]">
+            Explore notes, past question papers, video lectures and live class
+            links for the Nepali curriculum.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex flex-wrap items-center gap-2">
           {isTeacher ? (
             <ResourceFormDialog onResourceSaved={fetchResources} />
           ) : (
@@ -196,10 +195,9 @@ export function ResourceManager() {
               variant="outline"
               size="sm"
               onClick={() => setRole("teacher")}
-              className="gap-1.5 text-xs"
             >
-              <Plus className="size-3.5" />
-              <span>Switch to Teacher to Add</span>
+              <Plus className="size-4" />
+              <span>Switch to teacher</span>
             </Button>
           )}
 
@@ -209,26 +207,25 @@ export function ResourceManager() {
               size="sm"
               onClick={handleSeedSampleData}
               disabled={isSeeding}
-              className="gap-1.5 text-xs"
             >
               {isSeeding ? (
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <Sparkles className="size-3.5 text-amber-500" />
+                <Sparkles className="size-4 text-[#F59E0B]" />
               )}
-              <span>Load Sample Resources</span>
+              <span>Load samples</span>
             </Button>
           )}
 
           <Button
             variant="ghost"
-            size="icon"
+            size="icon-sm"
             onClick={fetchResources}
             disabled={isLoading}
             title="Refresh resources"
             aria-label="Refresh resources"
           >
-            <RefreshCw className={isLoading ? "size-4 animate-spin" : "size-4"} />
+            <RefreshCw className={isLoading ? "size-5 animate-spin" : "size-5"} />
           </Button>
         </div>
       </div>
@@ -237,20 +234,20 @@ export function ResourceManager() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+          <Search className="pointer-events-none absolute left-5 top-1/2 size-4 -translate-y-1/2 text-[#635F69]" />
           <Input
             placeholder="Search notes, topics, or subjects..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 pr-8"
+            className="pl-12 pr-12"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-[#635F69] hover:text-[#332F3A]"
               aria-label="Clear search"
             >
-              <X className="size-3.5" />
+              <X className="size-4" />
             </button>
           )}
         </div>
@@ -320,94 +317,97 @@ export function ResourceManager() {
       </div>
 
       {/* Filter Badges & Counter */}
-      <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex flex-col items-start justify-between gap-2 text-xs text-[#635F69] sm:flex-row sm:items-center">
+        <div className="flex flex-wrap items-center gap-2">
           <span>
-            Showing <strong className="text-foreground">{filteredResources.length}</strong> of{" "}
+            Showing <strong className="text-[#332F3A]">{filteredResources.length}</strong> of{" "}
             {resources.length} resources
           </span>
           {hasActiveFilters && (
             <Button
               variant="link"
-              size="sm"
+              size="xs"
               onClick={clearFilters}
-              className="h-auto p-0 text-xs text-primary"
+              className="h-auto px-0 text-[#7C3AED]"
             >
               Reset all filters
             </Button>
           )}
         </div>
         <div className="text-[11px]">
-          Current Mode:{" "}
-          <strong className="text-foreground">
-            {isTeacher ? "Teacher (Edit & Manage)" : "Student (Browse & Learn)"}
+          Mode:{" "}
+          <strong className="text-[#332F3A]">
+            {isTeacher ? "Teacher · edit & manage" : "Student · browse & learn"}
           </strong>
         </div>
       </div>
 
       {/* Main Content Area */}
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+        <div className="grid grid-cols-1 gap-5 pt-2 md:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="h-44 rounded-xl border border-muted bg-muted/20 animate-pulse p-4 flex flex-col justify-between"
+              className="flex h-48 animate-pulse flex-col justify-between rounded-[32px] border border-white/60 bg-white/40 p-5 shadow-clayPressed"
             >
-              <div className="space-y-2">
-                <div className="h-4 w-24 bg-muted/60 rounded" />
-                <div className="h-5 w-3/4 bg-muted/60 rounded" />
-                <div className="h-3 w-full bg-muted/40 rounded" />
+              <div className="space-y-3">
+                <div className="h-5 w-24 rounded-full bg-[#7C3AED]/10" />
+                <div className="h-6 w-3/4 rounded-full bg-[#7C3AED]/10" />
+                <div className="h-4 w-full rounded-full bg-[#7C3AED]/5" />
               </div>
-              <div className="h-6 w-28 bg-muted/40 rounded self-end" />
+              <div className="h-7 w-28 self-end rounded-full bg-[#7C3AED]/10" />
             </div>
           ))}
         </div>
       ) : error ? (
-        <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-8 text-center space-y-3">
-          <AlertCircle className="size-8 text-destructive mx-auto" />
-          <h3 className="font-semibold text-destructive">Failed to load resources</h3>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">{error}</p>
-          <Button variant="outline" size="sm" onClick={fetchResources} className="gap-1.5">
-            <RefreshCw className="size-3.5" />
-            <span>Try Again</span>
+        <div className="space-y-3 rounded-[32px] border border-[#DB2777]/20 bg-[#DB2777]/5 p-10 text-center">
+          <AlertCircle className="mx-auto size-9 text-[#DB2777]" />
+          <h3 className="font-heading text-lg font-extrabold text-[#DB2777]">
+            Failed to load resources
+          </h3>
+          <p className="mx-auto max-w-md text-sm text-[#635F69]">{error}</p>
+          <Button variant="outline" size="sm" onClick={fetchResources}>
+            <RefreshCw className="size-4" />
+            <span>Try again</span>
           </Button>
         </div>
       ) : resources.length === 0 ? (
         /* Empty Database State */
-        <div className="rounded-2xl border border-dashed border-border p-12 text-center space-y-4 max-w-xl mx-auto my-8">
-          <div className="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
-            <BookOpen className="size-6" />
+        <div className="mx-auto my-8 max-w-xl space-y-4 rounded-[40px] border border-dashed border-[#7C3AED]/25 bg-white/60 p-12 text-center shadow-clayPressed">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-3xl bg-[#7C3AED]/10 text-[#7C3AED]">
+            <BookOpen className="size-8" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">
+            <h3 className="font-heading text-xl font-extrabold text-[#332F3A]">
               No learning resources published yet
             </h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              Start building the library by adding course notes, past question papers, or video lesson links. Or load sample Nepali curriculum resources with one click.
+            <p className="mt-1.5 text-sm leading-relaxed text-[#635F69]">
+              Start building the library by adding course notes, past question
+              papers or video lesson links — or load sample resources in one
+              click.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <div className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
             <Button
-              variant="default"
               onClick={handleSeedSampleData}
               disabled={isSeeding}
-              className="gap-1.5 shadow-sm w-full sm:w-auto"
+              className="w-full sm:w-auto"
             >
               {isSeeding ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Sparkles className="size-4" />
               )}
-              <span>Load Sample Resources</span>
+              <span>Load sample resources</span>
             </Button>
 
             {isTeacher ? (
               <ResourceFormDialog
                 onResourceSaved={fetchResources}
                 triggerButton={
-                  <Button variant="outline" className="gap-1.5 w-full sm:w-auto">
+                  <Button variant="outline" className="w-full sm:w-auto">
                     <Plus className="size-4" />
-                    <span>Create Custom Resource</span>
+                    <span>Create resource</span>
                   </Button>
                 }
               />
@@ -415,21 +415,23 @@ export function ResourceManager() {
               <Button
                 variant="outline"
                 onClick={() => setRole("teacher")}
-                className="gap-1.5 w-full sm:w-auto"
+                className="w-full sm:w-auto"
               >
                 <GraduationCap className="size-4" />
-                <span>Switch to Teacher View</span>
+                <span>Switch to teacher</span>
               </Button>
             )}
           </div>
         </div>
       ) : filteredResources.length === 0 ? (
         /* Filter Empty State */
-        <div className="rounded-2xl border border-dashed border-border p-10 text-center space-y-3 max-w-md mx-auto my-8">
-          <Filter className="size-8 text-muted-foreground mx-auto" />
-          <h3 className="font-medium text-foreground">No resources match your filter</h3>
-          <p className="text-xs text-muted-foreground">
-            Try adjusting your search query, subject, or resource type.
+        <div className="mx-auto my-8 max-w-md space-y-3 rounded-[40px] border border-dashed border-[#7C3AED]/25 bg-white/60 p-10 text-center shadow-clayPressed">
+          <Filter className="mx-auto size-9 text-[#635F69]" />
+          <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+            No resources match your filter
+          </h3>
+          <p className="text-sm text-[#635F69]">
+            Try adjusting your search query, subject or resource type.
           </p>
           <Button variant="outline" size="sm" onClick={clearFilters}>
             Clear all filters
@@ -437,7 +439,7 @@ export function ResourceManager() {
         </div>
       ) : (
         /* Resource Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+        <div className="grid grid-cols-1 gap-5 pt-2 md:grid-cols-2 lg:grid-cols-3">
           {filteredResources.map((item) => (
             <ResourceCard
               key={item.id}

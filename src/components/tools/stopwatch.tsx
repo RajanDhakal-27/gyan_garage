@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { formatStopwatchTime } from "@/lib/stopwatch";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +14,6 @@ import {
   Clock,
 } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "cn";
 
 export interface Lap {
   index: number;
@@ -33,14 +32,14 @@ export function Stopwatch() {
   const lastLapTimeRef = useRef<number>(0);
   const requestRef = useRef<number | null>(null);
 
-  const updateTimer = useCallback(() => {
+  function updateTimer() {
     if (startTimeRef.current !== null) {
       const now = performance.now();
       const currentElapsed = accumulatedRef.current + (now - startTimeRef.current);
       setElapsedMs(currentElapsed);
       requestRef.current = requestAnimationFrame(updateTimer);
     }
-  }, []);
+  }
 
   const handleStart = () => {
     if (isRunning) return;
@@ -124,46 +123,44 @@ export function Stopwatch() {
   }
 
   return (
-    <div className="space-y-8 max-w-3xl mx-auto">
+    <div className="mx-auto max-w-3xl space-y-8">
       {/* Stopwatch Chassis */}
-      <div className="border border-border/80 bg-card p-6 sm:p-10 shadow-sm relative overflow-hidden">
+      <div className="relative overflow-hidden rounded-[48px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl sm:p-10">
         {/* Monotonic indicator tag */}
-        <div className="flex items-center justify-between border-b border-border/80 pb-4 mb-8">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-white/60 pb-4">
           <div className="flex items-center gap-2">
-            <Clock className="size-4 text-primary" />
-            <span className="font-mono text-xs uppercase tracking-wider font-semibold text-primary">
-              Monotonic Chronometer
+            <span className="flex size-9 items-center justify-center rounded-2xl bg-[#7C3AED]/10 text-[#7C3AED]">
+              <Clock className="size-4" />
+            </span>
+            <span className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#7C3AED]">
+              Monotonic chronometer
             </span>
           </div>
-          <Badge variant="outline" className="font-mono text-[10px] text-muted-foreground">
-            performance.now() High Precision
-          </Badge>
+          <Badge variant="outline">High precision</Badge>
         </div>
 
         {/* Big Digit Display */}
-        <div className="py-8 text-center select-none">
-          <div className="font-mono text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-primary tabular-nums">
+        <div className="select-none py-8 text-center">
+          <div className="font-heading text-5xl font-black tabular-nums tracking-tight text-[#7C3AED] sm:text-7xl lg:text-8xl">
             {hours !== "00" && <span>{hours}:</span>}
             <span>{minutes}</span>
-            <span className="text-border">:</span>
+            <span className="text-[#635F69]/50">:</span>
             <span>{seconds}</span>
-            <span className="text-muted-foreground text-3xl sm:text-5xl lg:text-6xl font-medium">
+            <span className="text-3xl font-extrabold text-[#635F69] sm:text-5xl lg:text-6xl">
               .{centiseconds}
             </span>
           </div>
-          <p className="font-mono text-xs text-muted-foreground mt-3 uppercase tracking-widest">
-            {hours !== "00" ? "Hours : Minutes : Seconds . Hundredths" : "Minutes : Seconds . Hundredths"}
+          <p className="mt-3 font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#635F69]">
+            {hours !== "00"
+              ? "Hours : Minutes : Seconds . Hundredths"
+              : "Minutes : Seconds . Hundredths"}
           </p>
         </div>
 
         {/* Controls */}
-        <div className="flex items-center justify-center gap-3 pt-4 flex-wrap">
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
           {!isRunning ? (
-            <Button
-              onClick={handleStart}
-              size="lg"
-              className="font-mono text-xs gap-2 min-w-[130px]"
-            >
+            <Button onClick={handleStart} size="lg" className="min-w-[140px]">
               <Play className="size-4 fill-current" />
               {elapsedMs > 0 ? "Resume" : "Start"}
             </Button>
@@ -172,7 +169,7 @@ export function Stopwatch() {
               onClick={handlePause}
               variant="outline"
               size="lg"
-              className="font-mono text-xs gap-2 min-w-[130px]"
+              className="min-w-[140px]"
             >
               <Pause className="size-4 fill-current" />
               Pause
@@ -184,10 +181,10 @@ export function Stopwatch() {
             disabled={!isRunning}
             variant="outline"
             size="lg"
-            className="font-mono text-xs gap-2 min-w-[120px]"
+            className="min-w-[130px]"
           >
             <Flag className="size-4" />
-            Lap Split
+            Lap split
           </Button>
 
           <Button
@@ -195,7 +192,7 @@ export function Stopwatch() {
             disabled={elapsedMs === 0 && laps.length === 0}
             variant="ghost"
             size="lg"
-            className="font-mono text-xs gap-2 text-muted-foreground hover:text-foreground"
+            className="text-[#635F69] hover:text-[#332F3A]"
           >
             <RotateCcw className="size-4" />
             Reset
@@ -205,55 +202,51 @@ export function Stopwatch() {
 
       {/* Lap Splits Ledger */}
       {laps.length > 0 && (
-        <div className="border border-border/80 bg-card p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-border/80 pb-3">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs text-primary font-bold">LAPS.</span>
-              <h3 className="font-serif text-lg font-medium">Lap Recording Ledger</h3>
-              <Badge variant="outline" className="font-mono text-[10px]">
-                {laps.length} Splits
-              </Badge>
+        <div className="space-y-4 rounded-[40px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/60 pb-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+                Lap recording ledger
+              </h3>
+              <Badge variant="outline">{laps.length} splits</Badge>
             </div>
             <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleCopyLaps}
-                className="font-mono text-xs gap-1.5"
                 title="Copy all laps"
               >
-                <Copy className="size-3.5" />
+                <Copy className="size-4" />
                 Copy
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleClearLaps}
-                className="font-mono text-xs gap-1.5 text-muted-foreground hover:text-destructive"
+                className="text-[#635F69] hover:bg-[#DB2777]/10 hover:text-[#DB2777]"
               >
-                <Trash2 className="size-3.5" />
+                <Trash2 className="size-4" />
                 Clear
               </Button>
             </div>
           </div>
 
-          <div className="divide-y divide-border/60 max-h-72 overflow-y-auto">
+          <div className="max-h-72 divide-y divide-white/60 overflow-y-auto">
             {laps.map((lap) => {
               const lapFormatted = formatDisplay(lap.lapTimeMs);
               const overallFormatted = formatDisplay(lap.overallTimeMs);
               return (
                 <div
                   key={lap.index}
-                  className="py-2.5 px-3 flex items-center justify-between font-mono text-xs hover:bg-muted/40 transition-colors"
+                  className="flex items-center justify-between rounded-2xl px-3 py-2.5 font-heading text-xs font-bold transition-colors hover:bg-[#EFEBF5]/70"
                 >
-                  <span className="text-muted-foreground font-semibold">
+                  <span className="text-[#635F69]">
                     Lap #{String(lap.index).padStart(2, "0")}
                   </span>
-                  <div className="flex items-center gap-6">
-                    <span className="text-foreground font-medium">
-                      +{lapFormatted}
-                    </span>
-                    <span className="text-muted-foreground tabular-nums w-28 text-right">
+                  <div className="flex items-center gap-6 tabular-nums">
+                    <span className="text-[#332F3A]">+{lapFormatted}</span>
+                    <span className="w-28 text-right text-[#635F69]">
                       {overallFormatted}
                     </span>
                   </div>

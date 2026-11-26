@@ -47,26 +47,32 @@ function QuizAttemptContent() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-2xl px-4 py-20 text-center space-y-4">
-        <Loader2 className="size-8 animate-spin text-primary mx-auto" />
-        <p className="text-sm text-muted-foreground">Loading quiz questions and timer...</p>
+      <div className="mx-auto max-w-2xl space-y-4 px-4 py-20 text-center">
+        <Loader2 className="mx-auto size-8 animate-spin text-[#7C3AED]" />
+        <p className="text-sm text-[#635F69]">
+          Loading quiz questions and timer…
+        </p>
       </div>
     );
   }
 
   if (error || !quiz) {
     return (
-      <div className="container mx-auto max-w-md px-4 py-16 text-center space-y-4">
-        <AlertCircle className="size-10 text-destructive mx-auto" />
-        <h2 className="text-lg font-bold text-foreground">Quiz Not Found</h2>
-        <p className="text-xs text-muted-foreground">
+      <div className="mx-auto max-w-md space-y-4 px-4 py-16 text-center">
+        <div className="mx-auto flex size-16 items-center justify-center rounded-3xl bg-[#DB2777]/10 text-[#DB2777]">
+          <AlertCircle className="size-8" />
+        </div>
+        <h2 className="font-heading text-xl font-extrabold text-[#332F3A]">
+          Quiz not found
+        </h2>
+        <p className="text-sm text-[#635F69]">
           {error || "The requested quiz could not be located."}
         </p>
         <div className="flex items-center justify-center gap-3 pt-2">
           <Link href="/quizzes">
-            <Button variant="outline" size="sm" className="gap-1.5">
-              <ArrowLeft className="size-3.5" />
-              <span>Back to Quizzes</span>
+            <Button variant="outline" size="sm">
+              <ArrowLeft className="size-4" />
+              <span>Back to quizzes</span>
             </Button>
           </Link>
         </div>
@@ -81,9 +87,9 @@ export default function QuizAttemptPage() {
   return (
     <Suspense
       fallback={
-        <div className="container mx-auto max-w-2xl px-4 py-20 text-center space-y-4">
-          <Loader2 className="size-8 animate-spin text-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Loading quiz questions...</p>
+        <div className="mx-auto max-w-2xl space-y-4 px-4 py-20 text-center">
+          <Loader2 className="mx-auto size-8 animate-spin text-[#7C3AED]" />
+          <p className="text-sm text-[#635F69]">Loading quiz questions…</p>
         </div>
       }
     >

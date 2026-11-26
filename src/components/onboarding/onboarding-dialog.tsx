@@ -21,8 +21,6 @@ import {
   ArrowLeft,
   Check,
   Sparkles,
-  School,
-  CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "cn";
@@ -110,211 +108,230 @@ export function OnboardingDialog() {
 
   return (
     <Dialog open={isOnboardingOpen} onOpenChange={setIsOnboardingOpen}>
-      <DialogContent className="max-w-xl border border-[rgba(20,28,43,0.24)] bg-[#EFE9DD] p-8 text-[#141C2B] rounded-none shadow-2xl">
-        <DialogHeader className="space-y-2 border-b border-[rgba(20,28,43,0.16)] pb-4 text-left">
-          <div className="flex items-center justify-between text-xs font-mono uppercase tracking-widest text-[#767E8C]">
-            <span>[ § ACADEMIC ONBOARDING ]</span>
-            <span>STEP {step} OF 2</span>
-          </div>
-
-          <DialogTitle className="font-editorial text-2xl sm:text-3xl font-semibold tracking-tight text-[#141C2B]">
-            {step === 1 ? "How will you use Gyan Garage?" : (
-              selectedRole === "student"
-                ? "Which grade are you studying in?"
-                : "Which grades do you teach?"
-            )}
-          </DialogTitle>
-
-          <DialogDescription className="font-mono text-xs text-[#4A5364]">
-            {step === 1
-              ? "Select your primary role. This customizes your academic workspace, library recommendations, and tools."
-              : (selectedRole === "student"
-                ? "Choose your current academic grade level so we can organize your question papers and syllabus notes."
-                : "Select one or multiple classes to tailor your teaching resources and assignments.")}
-          </DialogDescription>
-        </DialogHeader>
-
-        {/* STEP 1: ROLE SELECTION */}
-        {step === 1 && (
-          <div className="space-y-4 py-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Option A: Student */}
-              <button
-                type="button"
-                onClick={() => setSelectedRole("student")}
-                className={cn(
-                  "relative flex flex-col justify-between p-5 text-left border transition-all rounded-none outline-none cursor-pointer",
-                  selectedRole === "student"
-                    ? "border-[#2C4A8F] bg-[#E5DED0] shadow-sm ring-1 ring-[#2C4A8F]"
-                    : "border-[rgba(20,28,43,0.16)] bg-[#EFE9DD] hover:bg-[#E5DED0]/50"
-                )}
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-[#767E8C]">
-                      ROLE: 01
-                    </span>
-                    {selectedRole === "student" && (
-                      <span className="flex size-4 items-center justify-center bg-[#2C4A8F] text-[#EFE9DD]">
-                        <Check className="size-3" />
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="font-editorial text-xl font-bold text-[#141C2B]">
-                    Student
-                  </h3>
-                  <p className="font-mono text-xs text-[#4A5364] leading-relaxed">
-                    Learn, practice, organize your studies, and access curriculum notes, question papers, and study timers.
-                  </p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-[rgba(20,28,43,0.12)] font-mono text-[10px] text-[#2C4A8F] uppercase">
-                  → Study workspace
-                </div>
-              </button>
-
-              {/* Option B: Teacher */}
-              <button
-                type="button"
-                onClick={() => setSelectedRole("teacher")}
-                className={cn(
-                  "relative flex flex-col justify-between p-5 text-left border transition-all rounded-none outline-none cursor-pointer",
-                  selectedRole === "teacher"
-                    ? "border-[#2C4A8F] bg-[#E5DED0] shadow-sm ring-1 ring-[#2C4A8F]"
-                    : "border-[rgba(20,28,43,0.16)] bg-[#EFE9DD] hover:bg-[#E5DED0]/50"
-                )}
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-[#767E8C]">
-                      ROLE: 02
-                    </span>
-                    {selectedRole === "teacher" && (
-                      <span className="flex size-4 items-center justify-center bg-[#2C4A8F] text-[#EFE9DD]">
-                        <Check className="size-3" />
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="font-editorial text-xl font-bold text-[#141C2B]">
-                    Teacher
-                  </h3>
-                  <p className="font-mono text-xs text-[#4A5364] leading-relaxed">
-                    Organize teaching materials, publish academic resources, construct objective quizzes, and assign homework.
-                  </p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-[rgba(20,28,43,0.12)] font-mono text-[10px] text-[#2C4A8F] uppercase">
-                  → Educator studio
-                </div>
-              </button>
+      <DialogContent className="max-w-xl sm:max-w-xl">
+        <div className="space-y-5">
+          <DialogHeader className="space-y-3 text-left">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Badge variant="secondary">
+                <Sparkles className="size-3.5" />
+                Academic onboarding
+              </Badge>
+              <span className="font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#635F69]">
+                Step {step} of 2
+              </span>
             </div>
 
-            {/* Optional Name */}
-            <div className="space-y-1.5 pt-2">
-              <label
-                htmlFor="user_name"
-                className="font-mono text-[11px] uppercase tracking-wider text-[#767E8C]"
-              >
-                Your Name / Scholar Title (Optional)
-              </label>
-              <Input
-                id="user_name"
-                placeholder={selectedRole === "teacher" ? "e.g. Ramesh Sir / Educator" : "e.g. Aarav Sharma"}
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                className="bg-[#EFE9DD] border-[rgba(20,28,43,0.2)]"
-              />
+            <DialogTitle className="text-2xl font-black leading-tight tracking-tight sm:text-3xl">
+              {step === 1
+                ? "How will you use Gyan Garage?"
+                : selectedRole === "student"
+                  ? "Which grade are you studying in?"
+                  : "Which grades do you teach?"}
+            </DialogTitle>
+
+            <DialogDescription>
+              {step === 1
+                ? "Select your primary role. This customizes your academic workspace, library recommendations and tools."
+                : selectedRole === "student"
+                  ? "Choose your current academic grade level so we can organize your question papers and syllabus notes."
+                  : "Select one or multiple classes to tailor your teaching resources and assignments."}
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* STEP 1: ROLE SELECTION */}
+          {step === 1 && (
+            <div className="space-y-5 py-1">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {/* Option A: Student */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole("student")}
+                  className={cn(
+                    "group relative flex cursor-pointer flex-col justify-between rounded-[28px] border p-5 text-left outline-none transition-all duration-300",
+                    selectedRole === "student"
+                      ? "-translate-y-1 border-[#7C3AED]/40 bg-white/90 shadow-clayCard"
+                      : "border-white/60 bg-white/50 shadow-clayPressed hover:-translate-y-1 hover:bg-white/70"
+                  )}
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clayButton">
+                        <BookOpen className="size-5" />
+                      </span>
+                      {selectedRole === "student" && (
+                        <span className="flex size-6 items-center justify-center rounded-full bg-[#10B981] text-white shadow-clayButton">
+                          <Check className="size-3.5" />
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="font-heading text-xl font-extrabold text-[#332F3A]">
+                      Student
+                    </h3>
+                    <p className="text-xs leading-relaxed text-[#635F69]">
+                      Learn, practice, organize your studies and access
+                      curriculum notes, question papers and study timers.
+                    </p>
+                  </div>
+                  <div className="mt-4 flex items-center gap-1 border-t border-white/70 pt-3 font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#7C3AED]">
+                    Study workspace
+                    <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+                  </div>
+                </button>
+
+                {/* Option B: Teacher */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole("teacher")}
+                  className={cn(
+                    "group relative flex cursor-pointer flex-col justify-between rounded-[28px] border p-5 text-left outline-none transition-all duration-300",
+                    selectedRole === "teacher"
+                      ? "-translate-y-1 border-[#10B981]/40 bg-white/90 shadow-clayCard"
+                      : "border-white/60 bg-white/50 shadow-clayPressed hover:-translate-y-1 hover:bg-white/70"
+                  )}
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#6EE7B7] to-[#10B981] text-white shadow-clayButton">
+                        <GraduationCap className="size-5" />
+                      </span>
+                      {selectedRole === "teacher" && (
+                        <span className="flex size-6 items-center justify-center rounded-full bg-[#10B981] text-white shadow-clayButton">
+                          <Check className="size-3.5" />
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="font-heading text-xl font-extrabold text-[#332F3A]">
+                      Teacher
+                    </h3>
+                    <p className="text-xs leading-relaxed text-[#635F69]">
+                      Organize teaching materials, publish academic resources,
+                      construct objective quizzes and assign homework.
+                    </p>
+                  </div>
+                  <div className="mt-4 flex items-center gap-1 border-t border-white/70 pt-3 font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#10B981]">
+                    Educator studio
+                    <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+                  </div>
+                </button>
+              </div>
+
+              {/* Optional Name */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="user_name"
+                  className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
+                >
+                  Your name / scholar title (optional)
+                </label>
+                <Input
+                  id="user_name"
+                  placeholder={
+                    selectedRole === "teacher"
+                      ? "e.g. Ramesh Sir / Educator"
+                      : "e.g. Aarav Sharma"
+                  }
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* STEP 2: GRADE SELECTION */}
-        {step === 2 && (
-          <div className="space-y-4 py-4">
-            {selectedRole === "student" ? (
-              /* Student: Single Select */
-              <div className="space-y-2">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-[#767E8C] block">
-                  Select your current grade:
-                </span>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {STUDENT_GRADES.map((grade) => {
-                    const isSelected = selectedGrade === grade;
-                    return (
-                      <button
-                        key={grade}
-                        type="button"
-                        onClick={() => setSelectedGrade(grade)}
-                        className={cn(
-                          "flex items-center justify-between p-3 border font-mono text-xs text-left transition-colors cursor-pointer",
-                          isSelected
-                            ? "border-[#2C4A8F] bg-[#2C4A8F] text-[#EFE9DD] font-bold"
-                            : "border-[rgba(20,28,43,0.16)] bg-[#E5DED0]/50 hover:bg-[#E5DED0] text-[#141C2B]"
-                        )}
-                      >
-                        <span>{grade}</span>
-                        {isSelected && <Check className="size-3" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : (
-              /* Teacher: Multi Select */
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-[#767E8C]">
-                    Select all classes you teach:
+          {/* STEP 2: GRADE SELECTION */}
+          {step === 2 && (
+            <div className="space-y-4 py-1">
+              {selectedRole === "student" ? (
+                /* Student: Single Select */
+                <div className="space-y-2.5">
+                  <span className="block font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]">
+                    Select your current grade
                   </span>
-                  <span className="font-mono text-[10px] text-[#2C4A8F]">
-                    {selectedGradesTaught.length} selected
-                  </span>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {STUDENT_GRADES.map((grade) => {
+                      const isSelected = selectedGrade === grade;
+                      return (
+                        <button
+                          key={grade}
+                          type="button"
+                          onClick={() => setSelectedGrade(grade)}
+                          className={cn(
+                            "flex cursor-pointer items-center justify-between gap-1 rounded-2xl border px-3 py-2.5 text-left text-xs font-bold transition-all duration-200",
+                            isSelected
+                              ? "border-transparent bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clayButton"
+                              : "border-white/60 bg-[#EFEBF5] text-[#332F3A] shadow-clayPressed hover:-translate-y-0.5 hover:text-[#7C3AED]"
+                          )}
+                        >
+                          <span className="truncate">{grade}</span>
+                          {isSelected && <Check className="size-3.5 shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-56 overflow-y-auto p-1 border border-[rgba(20,28,43,0.12)]">
-                  {TEACHER_GRADES.map((grade) => {
-                    const isSelected = selectedGradesTaught.includes(grade);
-                    return (
-                      <button
-                        key={grade}
-                        type="button"
-                        onClick={() => toggleTeacherGrade(grade)}
-                        className={cn(
-                          "flex items-center justify-between p-2.5 border font-mono text-xs text-left transition-colors cursor-pointer",
-                          isSelected
-                            ? "border-[#2C4A8F] bg-[#2C4A8F] text-[#EFE9DD] font-bold"
-                            : "border-[rgba(20,28,43,0.16)] bg-[#EFE9DD] hover:bg-[#E5DED0] text-[#141C2B]"
-                        )}
-                      >
-                        <span className="truncate">{grade}</span>
-                        {isSelected && <Check className="size-3 shrink-0" />}
-                      </button>
-                    );
-                  })}
+              ) : (
+                /* Teacher: Multi Select */
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]">
+                      Select all classes you teach
+                    </span>
+                    <span className="font-heading text-[11px] font-extrabold text-[#7C3AED]">
+                      {selectedGradesTaught.length} selected
+                    </span>
+                  </div>
+                  <div className="grid max-h-60 grid-cols-2 gap-2 overflow-y-auto rounded-[24px] bg-[#EFEBF5] p-3 shadow-clayPressed sm:grid-cols-4">
+                    {TEACHER_GRADES.map((grade) => {
+                      const isSelected = selectedGradesTaught.includes(grade);
+                      return (
+                        <button
+                          key={grade}
+                          type="button"
+                          onClick={() => toggleTeacherGrade(grade)}
+                          className={cn(
+                            "flex cursor-pointer items-center justify-between gap-1 rounded-2xl border px-3 py-2 text-left text-xs font-bold transition-all duration-200",
+                            isSelected
+                              ? "border-transparent bg-gradient-to-br from-[#6EE7B7] to-[#10B981] text-white shadow-clayButton"
+                              : "border-white/70 bg-white/70 text-[#332F3A] shadow-clayCard hover:-translate-y-0.5 hover:text-[#10B981]"
+                          )}
+                        >
+                          <span className="truncate">{grade}</span>
+                          {isSelected && (
+                            <Check className="size-3 shrink-0" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
+        </div>
 
-        <DialogFooter className="border-t border-[rgba(20,28,43,0.16)] bg-[#E5DED0]/60 p-4 -mx-8 -mb-8 flex items-center justify-between sm:justify-between">
+        <DialogFooter className="items-center sm:justify-between">
           {step === 2 ? (
-            <Button variant="outline" size="sm" onClick={handleBack} className="gap-1.5">
-              <ArrowLeft className="size-3.5" />
+            <Button variant="outline" size="sm" onClick={handleBack}>
+              <ArrowLeft className="size-4" />
               <span>Back</span>
             </Button>
           ) : (
-            <div className="font-mono text-[11px] text-[#767E8C]">
+            <div className="text-[11px] font-medium text-[#635F69]">
               No registration required
             </div>
           )}
 
           {step === 1 ? (
-            <Button size="sm" onClick={handleNext} className="gap-1.5 ml-auto">
+            <Button size="sm" onClick={handleNext} className="ml-auto">
               <span>Continue</span>
-              <ArrowRight className="size-3.5" />
+              <ArrowRight className="size-4" />
             </Button>
           ) : (
-            <Button size="sm" onClick={handleFinish} className="gap-1.5 ml-auto">
-              <span>Enter {selectedRole === "teacher" ? "Teacher Studio" : "Student Desk"}</span>
-              <ArrowRight className="size-3.5" />
+            <Button size="sm" onClick={handleFinish} className="ml-auto">
+              <span>
+                Enter{" "}
+                {selectedRole === "teacher" ? "teacher studio" : "student desk"}
+              </span>
+              <ArrowRight className="size-4" />
             </Button>
           )}
         </DialogFooter>

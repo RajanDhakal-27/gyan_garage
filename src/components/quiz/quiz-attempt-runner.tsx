@@ -35,14 +35,10 @@ import {
   ArrowRight,
   CheckCircle2,
   XCircle,
-  AlertTriangle,
   PlayCircle,
   RotateCcw,
-  BookOpen,
   Send,
   Loader2,
-  HelpCircle,
-  Calendar,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "cn";
@@ -67,6 +63,11 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [scoreResult, setScoreResult] = useState<QuizScoreResult | null>(null);
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
+
+  // Scroll to the top whenever the attempt stage changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [stage]);
 
   // Timer interval ref
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -166,12 +167,12 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
   // Timer urgency style
   const getTimerStyle = () => {
     if (timeLeft <= 30) {
-      return "border-red-300 bg-red-50 text-red-600 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800 animate-pulse font-bold";
+      return "bg-[#DB2777]/10 text-[#DB2777] border-[#DB2777]/30 animate-clay-breathe";
     }
     if (timeLeft <= 60) {
-      return "border-amber-300 bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800 font-semibold";
+      return "bg-[#F59E0B]/10 text-[#B45309] border-[#F59E0B]/30";
     }
-    return "border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800 font-semibold";
+    return "bg-[#0EA5E9]/10 text-[#0284C7] border-[#0EA5E9]/25";
   };
 
   // -------------------------------------------------------------
@@ -179,86 +180,84 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
   // -------------------------------------------------------------
   if (stage === "intro") {
     return (
-      <div className="container mx-auto max-w-3xl px-4 py-12 sm:px-6">
+      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <Link
           href="/quizzes"
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-6"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm font-bold text-[#635F69] transition-colors hover:text-[#7C3AED]"
         >
-          <ArrowLeft className="size-3.5" />
-          <span>Back to Quizzes</span>
+          <ArrowLeft className="size-4" />
+          <span>Back to quizzes</span>
         </Link>
 
-        <Card className="border border-border/80 shadow-md">
-          <CardHeader className="space-y-4 pb-6 border-b">
-            <div className="flex items-center gap-2 flex-wrap">
-              {quiz.subject && (
-                <Badge variant="secondary" className="text-xs">
-                  {quiz.subject}
-                </Badge>
-              )}
-              <Badge variant="outline" className="text-xs gap-1">
-                <Clock className="size-3" />
+        <Card className="overflow-hidden rounded-[40px]">
+          <CardHeader className="space-y-4 border-b border-white/60 pb-6">
+            <div className="flex flex-wrap items-center gap-2">
+              {quiz.subject && <Badge variant="secondary">{quiz.subject}</Badge>}
+              <Badge variant="outline">
+                <Clock className="size-3.5" />
                 <span>{formatQuizDuration(durationSeconds)}</span>
               </Badge>
-              <Badge variant="outline" className="text-xs gap-1">
-                <Award className="size-3" />
-                <span>{totalPossibleMarks} Marks</span>
+              <Badge variant="outline">
+                <Award className="size-3.5" />
+                <span>{totalPossibleMarks} marks</span>
               </Badge>
             </div>
 
-            <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
+            <CardTitle className="text-2xl font-black leading-tight tracking-tight text-[#332F3A] sm:text-3xl">
               {quiz.title}
             </CardTitle>
 
             {quiz.description && (
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm leading-relaxed text-[#635F69]">
                 {quiz.description}
               </p>
             )}
           </CardHeader>
 
-          <CardContent className="py-6 space-y-4">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Test Instructions:
+          <CardContent className="space-y-4 py-6">
+            <h4 className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#635F69]">
+              Test instructions
             </h4>
-            <ul className="space-y-2.5 text-sm text-foreground">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="size-4 text-primary shrink-0 mt-0.5" />
+            <div className="space-y-3 rounded-[28px] bg-[#EFEBF5] p-5 shadow-clayPressed">
+              <div className="flex items-start gap-3 text-sm leading-relaxed text-[#332F3A]">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#10B981]" />
                 <span>
-                  This test has <strong>{questions.length} multiple-choice questions</strong> worth a total of{" "}
-                  <strong>{totalPossibleMarks} marks</strong>.
+                  This test has{" "}
+                  <strong>{questions.length} multiple-choice questions</strong>{" "}
+                  worth a total of <strong>{totalPossibleMarks} marks</strong>.
                 </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="size-4 text-primary shrink-0 mt-0.5" />
+              </div>
+              <div className="flex items-start gap-3 text-sm leading-relaxed text-[#332F3A]">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#10B981]" />
                 <span>
                   A countdown timer will run for{" "}
                   <strong>{formatQuizDuration(durationSeconds)}</strong>.
                 </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="size-4 text-primary shrink-0 mt-0.5" />
+              </div>
+              <div className="flex items-start gap-3 text-sm leading-relaxed text-[#332F3A]">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#10B981]" />
                 <span>
                   If the timer expires, all answered questions will be{" "}
                   <strong>automatically submitted</strong>.
                 </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="size-4 text-primary shrink-0 mt-0.5" />
+              </div>
+              <div className="flex items-start gap-3 text-sm leading-relaxed text-[#332F3A]">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#10B981]" />
                 <span>
-                  Immediate score and answer breakdown will be presented upon submission.
+                  Immediate score and answer breakdown will be presented upon
+                  submission.
                 </span>
-              </li>
-            </ul>
+              </div>
+            </div>
           </CardContent>
 
-          <CardFooter className="flex items-center justify-between border-t bg-muted/20 py-4">
+          <CardFooter className="flex flex-wrap items-center justify-between gap-3 border-t border-white/60 bg-white/40 py-4">
             <Button variant="outline" onClick={() => router.push("/quizzes")}>
               Cancel
             </Button>
-            <Button onClick={handleStartQuiz} className="gap-2 shadow-sm font-semibold">
+            <Button onClick={handleStartQuiz}>
               <PlayCircle className="size-4" />
-              <span>Begin Test Now</span>
+              <span>Begin test now</span>
             </Button>
           </CardFooter>
         </Card>
@@ -278,77 +277,80 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
         : `${elapsedRemainder}s`;
 
     return (
-      <div className="container mx-auto max-w-4xl px-4 py-10 sm:px-6 space-y-8">
+      <div className="mx-auto max-w-4xl space-y-7 px-4 py-10 sm:px-6">
         {/* Top bar */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/quizzes"
-            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#635F69] transition-colors hover:text-[#7C3AED]"
           >
-            <ArrowLeft className="size-3.5" />
-            <span>Back to All Quizzes</span>
+            <ArrowLeft className="size-4" />
+            <span>Back to all quizzes</span>
           </Link>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRetakeQuiz}
-            className="gap-1.5 text-xs"
-          >
-            <RotateCcw className="size-3.5" />
-            <span>Retake Quiz</span>
+          <Button variant="outline" size="sm" onClick={handleRetakeQuiz}>
+            <RotateCcw className="size-4" />
+            <span>Retake quiz</span>
           </Button>
         </div>
 
         {/* Scorecard Hero */}
-        <div className="rounded-2xl border bg-card p-6 sm:p-8 shadow-sm space-y-6 text-center">
-          <div className="max-w-md mx-auto space-y-2">
+        <div className="space-y-6 rounded-[40px] border border-white/70 bg-white/70 p-6 text-center shadow-clayCard backdrop-blur-xl sm:p-8">
+          <div className="mx-auto max-w-md space-y-3">
             <span
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold",
+                "inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 font-heading text-xs font-extrabold",
                 scoreResult.gradeBadgeClass
               )}
             >
               CDC Grade: {scoreResult.grade}
             </span>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Performance Summary
+            <h2 className="font-heading text-2xl font-black tracking-tight text-[#332F3A] sm:text-3xl">
+              Performance summary
             </h2>
-            <p className="text-xs text-muted-foreground">{quiz.title}</p>
+            <p className="text-xs text-[#635F69]">{quiz.title}</p>
           </div>
 
           {/* Metrics grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto pt-2">
-            <div className="rounded-xl border bg-muted/20 p-4 space-y-1">
-              <span className="text-xs text-muted-foreground">Score</span>
-              <p className="text-2xl font-bold text-foreground">
+          <div className="mx-auto grid max-w-2xl grid-cols-2 gap-4 pt-2 sm:grid-cols-4">
+            <div className="space-y-1 rounded-[24px] bg-[#EFEBF5] p-4 shadow-clayPressed">
+              <span className="font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#635F69]">
+                Score
+              </span>
+              <p className="font-heading text-2xl font-black text-[#332F3A]">
                 {scoreResult.score}{" "}
-                <span className="text-xs text-muted-foreground font-normal">
+                <span className="text-xs font-bold text-[#635F69]">
                   / {scoreResult.total_marks}
                 </span>
               </p>
             </div>
 
-            <div className="rounded-xl border bg-muted/20 p-4 space-y-1">
-              <span className="text-xs text-muted-foreground">Percentage</span>
-              <p className="text-2xl font-bold text-foreground">
+            <div className="space-y-1 rounded-[24px] bg-[#EFEBF5] p-4 shadow-clayPressed">
+              <span className="font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#635F69]">
+                Percentage
+              </span>
+              <p className="font-heading text-2xl font-black text-[#332F3A]">
                 {scoreResult.percentage}%
               </p>
             </div>
 
-            <div className="rounded-xl border bg-muted/20 p-4 space-y-1">
-              <span className="text-xs text-muted-foreground">Accuracy</span>
-              <p className="text-2xl font-bold text-foreground">
+            <div className="space-y-1 rounded-[24px] bg-[#EFEBF5] p-4 shadow-clayPressed">
+              <span className="font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#635F69]">
+                Accuracy
+              </span>
+              <p className="font-heading text-2xl font-black text-[#332F3A]">
                 {scoreResult.correct_count}{" "}
-                <span className="text-xs text-muted-foreground font-normal">
+                <span className="text-xs font-bold text-[#635F69]">
                   / {scoreResult.total_questions}
                 </span>
               </p>
             </div>
 
-            <div className="rounded-xl border bg-muted/20 p-4 space-y-1">
-              <span className="text-xs text-muted-foreground">Time Taken</span>
-              <p className="text-2xl font-bold text-foreground">
+            <div className="space-y-1 rounded-[24px] bg-[#EFEBF5] p-4 shadow-clayPressed">
+              <span className="font-heading text-[11px] font-extrabold uppercase tracking-wide text-[#635F69]">
+                Time taken
+              </span>
+              <p className="font-heading text-2xl font-black text-[#332F3A]">
                 {timeFormatted}
               </p>
             </div>
@@ -357,11 +359,11 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
 
         {/* Detailed Question Review Breakdown */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold text-foreground">
-              Question-by-Question Review
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+              Question-by-question review
             </h3>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-[#635F69]">
               {scoreResult.correct_count} of {scoreResult.total_questions} correct
             </span>
           </div>
@@ -372,78 +374,77 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
                 <div
                   key={item.question_id || idx}
                   className={cn(
-                    "rounded-xl border p-5 space-y-3.5 transition-all",
+                    "space-y-3.5 rounded-[32px] border p-5 backdrop-blur-xl transition-all",
                     item.is_correct
-                      ? "border-emerald-200 bg-emerald-50/20 dark:border-emerald-950/60 dark:bg-emerald-950/10"
-                      : "border-red-200 bg-red-50/20 dark:border-red-950/60 dark:bg-red-950/10"
+                      ? "border-[#10B981]/25 bg-[#10B981]/5 shadow-clayCard"
+                      : "border-[#DB2777]/25 bg-[#DB2777]/5 shadow-clayCard"
                   )}
                 >
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
-                        Q{idx + 1}
-                      </Badge>
-                      <span className="text-xs font-semibold">
+                      <Badge variant="outline">Q{idx + 1}</Badge>
+                      <span className="font-heading text-xs font-extrabold">
                         {item.is_correct ? (
-                          <span className="text-emerald-600 dark:text-emerald-400 inline-flex items-center gap-1">
-                            <CheckCircle2 className="size-3.5" /> Correct (+{item.marks_awarded} marks)
+                          <span className="inline-flex items-center gap-1 text-[#047857]">
+                            <CheckCircle2 className="size-4" /> Correct (+
+                            {item.marks_awarded} marks)
                           </span>
                         ) : (
-                          <span className="text-red-600 dark:text-red-400 inline-flex items-center gap-1">
-                            <XCircle className="size-3.5" /> Incorrect (0/{item.marks_possible} marks)
+                          <span className="inline-flex items-center gap-1 text-[#DB2777]">
+                            <XCircle className="size-4" /> Incorrect (0/
+                            {item.marks_possible} marks)
                           </span>
                         )}
                       </span>
                     </div>
 
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-[11px] text-[#635F69]">
                       Weight: {item.marks_possible} mark(s)
                     </span>
                   </div>
 
                   {/* Question Text */}
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-sm font-bold leading-relaxed text-[#332F3A]">
                     {item.question}
                   </p>
 
                   {/* Options review */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <div className="grid grid-cols-1 gap-2 pt-1 sm:grid-cols-2">
                     {item.options.map((opt, oIdx) => {
                       const letter = String.fromCharCode(65 + oIdx);
                       const isStudentChoice = item.selected_answer === opt;
                       const isActualCorrect = item.correct_answer === opt;
 
-                      let cardStyle = "border-border/60 bg-card text-foreground";
+                      let cardStyle =
+                        "border-white/70 bg-white/70 text-[#332F3A] shadow-clayCard";
                       if (isActualCorrect) {
                         cardStyle =
-                          "border-emerald-500 bg-emerald-50 text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-200 font-semibold";
+                          "border-[#10B981]/40 bg-[#10B981]/10 text-[#047857] font-bold";
                       } else if (isStudentChoice && !item.is_correct) {
                         cardStyle =
-                          "border-red-400 bg-red-50 text-red-900 dark:bg-red-950/60 dark:text-red-200 line-through";
+                          "border-[#DB2777]/40 bg-[#DB2777]/10 text-[#DB2777] line-through";
                       }
 
                       return (
                         <div
                           key={oIdx}
                           className={cn(
-                            "flex items-center justify-between rounded-lg border px-3 py-2 text-xs",
+                            "flex items-center justify-between gap-2 rounded-2xl border px-3.5 py-2.5 text-xs",
                             cardStyle
                           )}
                         >
                           <div className="flex items-center gap-2">
-                            <span className="font-bold">{letter}.</span>
+                            <span className="font-heading font-extrabold">
+                              {letter}.
+                            </span>
                             <span>{opt}</span>
                           </div>
 
                           {isActualCorrect && (
-                            <Badge variant="secondary" className="text-[10px] bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100">
-                              Correct Answer
-                            </Badge>
+                            <Badge variant="secondary">Correct</Badge>
                           )}
                           {isStudentChoice && !isActualCorrect && (
-                            <Badge variant="secondary" className="text-[10px] bg-red-200 text-red-900 dark:bg-red-800 dark:text-red-100">
-                              Your Answer
-                            </Badge>
+                            <Badge variant="outline">Your answer</Badge>
                           )}
                         </div>
                       );
@@ -451,7 +452,7 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
                   </div>
 
                   {!item.selected_answer && (
-                    <p className="text-[11px] text-amber-600 dark:text-amber-400 italic">
+                    <p className="text-[11px] italic text-[#B45309]">
                       You did not select an answer for this question.
                     </p>
                   )}
@@ -461,13 +462,13 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between border-t pt-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/60 pt-6">
           <Button variant="outline" onClick={() => router.push("/quizzes")}>
-            Back to Quizzes
+            Back to quizzes
           </Button>
-          <Button onClick={handleRetakeQuiz} className="gap-2">
+          <Button onClick={handleRetakeQuiz}>
             <RotateCcw className="size-4" />
-            <span>Retake Quiz</span>
+            <span>Retake quiz</span>
           </Button>
         </div>
       </div>
@@ -478,15 +479,15 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
   // STAGE 2: ACTIVE EXAM / IN-PROGRESS SCREEN
   // -------------------------------------------------------------
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-6 sm:px-6 space-y-6">
+    <div className="mx-auto max-w-4xl space-y-5 px-4 py-6 sm:px-6">
       {/* Sticky Header with Title and Countdown Timer */}
-      <div className="sticky top-16 z-30 flex items-center justify-between gap-4 rounded-xl border bg-background/95 p-4 shadow-sm backdrop-blur-md">
+      <div className="sticky top-20 z-30 flex flex-wrap items-center justify-between gap-4 rounded-[28px] border border-white/70 bg-white/80 p-4 shadow-clayCard backdrop-blur-xl">
         <div>
-          <h2 className="text-base font-bold text-foreground line-clamp-1">
+          <h2 className="line-clamp-1 font-heading text-base font-extrabold text-[#332F3A]">
             {quiz.title}
           </h2>
-          <p className="text-xs text-muted-foreground">
-            Question {currentQuestionIndex + 1} of {questions.length} •{" "}
+          <p className="text-xs text-[#635F69]">
+            Question {currentQuestionIndex + 1} of {questions.length} ·{" "}
             {answeredCount} answered
           </p>
         </div>
@@ -495,28 +496,27 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
           {/* Active Countdown Timer */}
           <div
             className={cn(
-              "flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-all",
+              "flex items-center gap-1.5 rounded-2xl border px-3.5 py-2 font-heading text-sm font-extrabold transition-all",
               getTimerStyle()
             )}
           >
             <Clock className="size-4" />
-            <span className="font-mono">{formatTimer(timeLeft)}</span>
+            <span>{formatTimer(timeLeft)}</span>
           </div>
 
           <Button
             size="sm"
             onClick={() => setShowConfirmSubmit(true)}
             disabled={isSubmitting}
-            className="gap-1.5 text-xs shadow-xs"
           >
-            <Send className="size-3.5" />
+            <Send className="size-4" />
             <span>Submit</span>
           </Button>
         </div>
       </div>
 
       {/* Question Navigation Bar (Pill selector) */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
         {questions.map((q, idx) => {
           const isCurrent = idx === currentQuestionIndex;
           const isAnswered = Boolean(selectedAnswers[q.id || `q_${idx + 1}`]);
@@ -527,12 +527,12 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
               type="button"
               onClick={() => setCurrentQuestionIndex(idx)}
               className={cn(
-                "flex size-8 shrink-0 items-center justify-center rounded-lg border text-xs font-semibold transition-all",
+                "flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-2xl border font-heading text-xs font-extrabold transition-all duration-200",
                 isCurrent
-                  ? "border-primary bg-primary text-primary-foreground shadow-xs ring-2 ring-primary/30"
+                  ? "border-transparent bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clayButton"
                   : isAnswered
-                  ? "border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200"
-                  : "border-muted bg-muted/30 text-muted-foreground hover:bg-muted"
+                    ? "border-[#10B981]/30 bg-[#10B981]/10 text-[#047857]"
+                    : "border-white/70 bg-[#EFEBF5] text-[#635F69] shadow-clayPressed hover:-translate-y-0.5"
               )}
             >
               {idx + 1}
@@ -543,30 +543,31 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
 
       {/* Main Question Card */}
       {currentQuestion && (
-        <Card className="border shadow-sm">
+        <Card className="rounded-[36px]">
           <CardHeader className="space-y-3 pb-4">
             <div className="flex items-center justify-between">
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary">
                 Question {currentQuestionIndex + 1}
               </Badge>
-              <span className="text-xs font-medium text-muted-foreground">
+              <span className="text-xs font-bold text-[#635F69]">
                 Worth {currentQuestion.marks || 1} mark(s)
               </span>
             </div>
 
-            <CardTitle className="text-lg font-semibold leading-relaxed text-foreground">
+            <CardTitle className="text-lg font-extrabold leading-relaxed text-[#332F3A]">
               {currentQuestion.question}
             </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-3 pb-6">
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
-              Choose one option:
+            <label className="block font-heading text-xs font-extrabold uppercase tracking-wide text-[#635F69]">
+              Choose one option
             </label>
 
             <div className="space-y-2.5">
               {currentQuestion.options?.map((option, optIdx) => {
-                const qId = currentQuestion.id || `q_${currentQuestionIndex + 1}`;
+                const qId =
+                  currentQuestion.id || `q_${currentQuestionIndex + 1}`;
                 const isSelected = selectedAnswers[qId] === option;
                 const optionLetter = String.fromCharCode(65 + optIdx);
 
@@ -576,19 +577,19 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
                     type="button"
                     onClick={() => handleSelectOption(qId, option)}
                     className={cn(
-                      "flex w-full items-center justify-between rounded-xl border p-3.5 text-left text-sm transition-all outline-none",
+                      "flex w-full cursor-pointer items-center justify-between rounded-2xl border p-4 text-left text-sm outline-none transition-all duration-200",
                       isSelected
-                        ? "border-primary bg-primary/10 text-foreground font-semibold shadow-2xs ring-1 ring-primary/40"
-                        : "border-border/80 bg-card hover:bg-muted/40 text-foreground"
+                        ? "border-[#7C3AED]/40 bg-[#7C3AED]/10 font-bold text-[#332F3A] shadow-clayCard"
+                        : "border-white/70 bg-white/70 text-[#332F3A] shadow-clayCard hover:-translate-y-0.5 hover:shadow-clayDeep"
                     )}
                   >
                     <div className="flex items-center gap-3">
                       <span
                         className={cn(
-                          "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors",
+                          "flex size-8 shrink-0 items-center justify-center rounded-xl font-heading text-xs font-extrabold transition-colors",
                           isSelected
-                            ? "bg-primary text-primary-foreground"
-                            : "border border-muted-foreground/30 text-muted-foreground"
+                            ? "bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clayButton"
+                            : "bg-[#EFEBF5] text-[#635F69] shadow-clayPressed"
                         )}
                       >
                         {optionLetter}
@@ -597,7 +598,7 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
                     </div>
 
                     {isSelected && (
-                      <CheckCircle2 className="size-4 text-primary shrink-0" />
+                      <CheckCircle2 className="size-5 shrink-0 text-[#7C3AED]" />
                     )}
                   </button>
                 );
@@ -605,7 +606,7 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
             </div>
           </CardContent>
 
-          <CardFooter className="flex items-center justify-between border-t bg-muted/20 py-3.5">
+          <CardFooter className="flex flex-wrap items-center justify-between gap-3 border-t border-white/60 bg-white/40 py-4">
             <Button
               variant="outline"
               size="sm"
@@ -613,13 +614,12 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
                 setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))
               }
               disabled={currentQuestionIndex === 0}
-              className="gap-1 text-xs"
             >
-              <ArrowLeft className="size-3.5" />
+              <ArrowLeft className="size-4" />
               <span>Previous</span>
             </Button>
 
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs font-bold text-[#635F69]">
               {currentQuestionIndex + 1} of {questions.length}
             </div>
 
@@ -632,19 +632,14 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
                     Math.min(questions.length - 1, prev + 1)
                   )
                 }
-                className="gap-1 text-xs"
               >
                 <span>Next</span>
-                <ArrowRight className="size-3.5" />
+                <ArrowRight className="size-4" />
               </Button>
             ) : (
-              <Button
-                size="sm"
-                onClick={() => setShowConfirmSubmit(true)}
-                className="gap-1.5 text-xs shadow-xs"
-              >
-                <Send className="size-3.5" />
-                <span>Submit Quiz</span>
+              <Button size="sm" onClick={() => setShowConfirmSubmit(true)}>
+                <Send className="size-4" />
+                <span>Submit quiz</span>
               </Button>
             )}
           </CardFooter>
@@ -655,15 +650,17 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
       <Dialog open={showConfirmSubmit} onOpenChange={setShowConfirmSubmit}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Submit Quiz Attempt?</DialogTitle>
+            <DialogTitle>Submit quiz attempt?</DialogTitle>
             <DialogDescription>
               {unansweredCount > 0 ? (
-                <span className="text-amber-600 dark:text-amber-400 font-medium">
-                  Warning: You have {unansweredCount} unanswered question(s). Unanswered questions will receive 0 marks.
+                <span className="font-bold text-[#B45309]">
+                  Warning: You have {unansweredCount} unanswered question(s).
+                  Unanswered questions will receive 0 marks.
                 </span>
               ) : (
                 <span>
-                  You have answered all {questions.length} questions. Are you ready to see your final score and results?
+                  You have answered all {questions.length} questions. Are you
+                  ready to see your final score and results?
                 </span>
               )}
             </DialogDescription>
@@ -675,7 +672,7 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
               onClick={() => setShowConfirmSubmit(false)}
               disabled={isSubmitting}
             >
-              Keep Answering
+              Keep answering
             </Button>
             <Button
               onClick={() =>
@@ -685,15 +682,14 @@ export function QuizAttemptRunner({ quiz }: QuizAttemptRunnerProps) {
                 )
               }
               disabled={isSubmitting}
-              className="gap-1.5"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
-                  <span>Scoring...</span>
+                  <span>Scoring…</span>
                 </>
               ) : (
-                <span>Confirm & Submit</span>
+                <span>Confirm & submit</span>
               )}
             </Button>
           </DialogFooter>

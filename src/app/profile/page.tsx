@@ -2,20 +2,15 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRole, UserRole } from "@/context/role-context";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
-  User,
   GraduationCap,
   School,
-  Sparkles,
   RotateCcw,
   Check,
   Save,
-  BookOpen,
-  ArrowRight,
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -51,11 +46,8 @@ const TEACHER_GRADES = [
 function ProfileContent() {
   const {
     role,
-    setRole,
     grade,
-    setGrade,
     gradesTaught,
-    setGradesTaught,
     profile,
     setIsOnboardingOpen,
     completeOnboarding,
@@ -100,67 +92,85 @@ function ProfileContent() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto space-y-10">
-        {/* Profile Header */}
-        <div className="border-b border-border/80 pb-6 space-y-2">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs uppercase tracking-widest text-primary font-semibold">
-              Academic Dossier
-            </span>
-            <span className="text-border">/</span>
-            <span className="font-mono text-xs text-muted-foreground">Settings & Preferences</span>
-          </div>
-          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
+    <div className="min-h-screen px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl space-y-8">
+        {/* Header */}
+        <div className="space-y-3">
+          <Badge variant="secondary">
+            <GraduationCap className="size-3.5" />
+            Academic dossier
+          </Badge>
+          <h1 className="font-heading text-3xl font-black tracking-tight text-[#332F3A] sm:text-4xl lg:text-5xl">
             Profile & Role Configuration
           </h1>
-          <p className="font-mono text-xs sm:text-sm text-muted-foreground">
-            Switch your active academic role, revise enrolled grade levels, and customize your scholar identity.
+          <p className="max-w-2xl text-sm leading-relaxed text-[#635F69] sm:text-base">
+            Switch your active academic role, revise enrolled grade levels, and
+            customise your scholar identity.
           </p>
         </div>
 
-        {/* Profile Form Card */}
-        <div className="border border-border/80 bg-card p-6 sm:p-10 space-y-8 shadow-sm">
-          {/* Identity Name */}
+        {/* Main card */}
+        <div className="space-y-8 rounded-[40px] border border-white/70 bg-white/70 p-6 shadow-clayDeep backdrop-blur-xl sm:p-10">
+          {/* Name */}
           <div className="space-y-2">
-            <label className="font-mono text-xs uppercase tracking-wider font-semibold text-foreground">
-              Display Name / Scholar Handle
+            <label
+              htmlFor="display-name"
+              className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]"
+            >
+              Display name
             </label>
             <Input
+              id="display-name"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
               placeholder="e.g. Suman Sharma"
-              className="font-mono text-xs bg-background max-w-md"
+              className="max-w-md"
             />
-            <p className="font-mono text-[11px] text-muted-foreground">
-              Used across test score cards, study planner ledger, and dashboard greetings.
+            <p className="text-xs text-[#635F69]">
+              Used across score cards, your study ledger and dashboard greetings.
             </p>
           </div>
 
-          {/* Role Selection */}
+          {/* Role */}
           <div className="space-y-3">
-            <label className="font-mono text-xs uppercase tracking-wider font-semibold text-foreground">
-              Primary Role in Gyan Garage
+            <label className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]">
+              Primary role
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <button
                 type="button"
                 onClick={() => setSelectedRole("student")}
                 className={cn(
-                  "p-5 text-left border transition-all flex flex-col justify-between space-y-3",
+                  "flex cursor-pointer flex-col justify-between gap-3 rounded-[28px] border p-5 text-left transition-all duration-200",
                   selectedRole === "student"
-                    ? "border-primary bg-secondary/50 text-foreground ring-1 ring-primary"
-                    : "border-border/80 bg-background text-muted-foreground hover:border-primary/50"
+                    ? "border-transparent bg-gradient-to-br from-[#A78BFA]/20 to-[#7C3AED]/10 shadow-clayPressed ring-2 ring-[#7C3AED]/40"
+                    : "border-white/70 bg-white/50 shadow-clayCard hover:-translate-y-1 hover:bg-white/80"
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <GraduationCap className={cn("size-6", selectedRole === "student" ? "text-primary" : "text-muted-foreground")} />
-                  {selectedRole === "student" && <Check className="size-4 text-primary" />}
+                  <span
+                    className={cn(
+                      "flex size-12 items-center justify-center rounded-2xl",
+                      selectedRole === "student"
+                        ? "bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clayButton"
+                        : "bg-[#EFEBF5] text-[#635F69]"
+                    )}
+                  >
+                    <GraduationCap className="size-6" />
+                  </span>
+                  {selectedRole === "student" && (
+                    <span className="flex size-7 items-center justify-center rounded-full bg-[#10B981] text-white shadow-clayButton">
+                      <Check className="size-4 stroke-[3]" />
+                    </span>
+                  )}
                 </div>
                 <div>
-                  <h3 className="font-serif text-lg font-medium text-foreground">Student / Scholar</h3>
-                  <p className="font-mono text-xs text-muted-foreground mt-1">
-                    Study curriculum materials, solve past question papers, take timed quizzes, and track daily goals.
+                  <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+                    Student / Scholar
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-[#635F69]">
+                    Study curriculum materials, solve past papers, take timed
+                    quizzes and track daily goals.
                   </p>
                 </div>
               </button>
@@ -169,46 +179,62 @@ function ProfileContent() {
                 type="button"
                 onClick={() => setSelectedRole("teacher")}
                 className={cn(
-                  "p-5 text-left border transition-all flex flex-col justify-between space-y-3",
+                  "flex cursor-pointer flex-col justify-between gap-3 rounded-[28px] border p-5 text-left transition-all duration-200",
                   selectedRole === "teacher"
-                    ? "border-primary bg-secondary/50 text-foreground ring-1 ring-primary"
-                    : "border-border/80 bg-background text-muted-foreground hover:border-primary/50"
+                    ? "border-transparent bg-gradient-to-br from-[#67E8F9]/20 to-[#0EA5E9]/10 shadow-clayPressed ring-2 ring-[#0EA5E9]/40"
+                    : "border-white/70 bg-white/50 shadow-clayCard hover:-translate-y-1 hover:bg-white/80"
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <School className={cn("size-6", selectedRole === "teacher" ? "text-primary" : "text-muted-foreground")} />
-                  {selectedRole === "teacher" && <Check className="size-4 text-primary" />}
+                  <span
+                    className={cn(
+                      "flex size-12 items-center justify-center rounded-2xl",
+                      selectedRole === "teacher"
+                        ? "bg-gradient-to-br from-[#38BDF8] to-[#0EA5E9] text-white shadow-clayButton"
+                        : "bg-[#EFEBF5] text-[#635F69]"
+                    )}
+                  >
+                    <School className="size-6" />
+                  </span>
+                  {selectedRole === "teacher" && (
+                    <span className="flex size-7 items-center justify-center rounded-full bg-[#10B981] text-white shadow-clayButton">
+                      <Check className="size-4 stroke-[3]" />
+                    </span>
+                  )}
                 </div>
                 <div>
-                  <h3 className="font-serif text-lg font-medium text-foreground">Teacher / Educator</h3>
-                  <p className="font-mono text-xs text-muted-foreground mt-1">
-                    Publish learning resources, assign homework problem sets, author quizzes, and archive question papers.
+                  <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+                    Teacher / Educator
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-[#635F69]">
+                    Publish resources, assign homework, author quizzes and
+                    archive question papers.
                   </p>
                 </div>
               </button>
             </div>
           </div>
 
-          {/* Grade Configuration based on Role */}
+          {/* Grades */}
           {selectedRole === "student" ? (
-            <div className="space-y-3 pt-4 border-t border-border/60">
-              <label className="font-mono text-xs uppercase tracking-wider font-semibold text-foreground">
-                Enrolled Grade Level
+            <div className="space-y-3 border-t border-[#7C3AED]/10 pt-6">
+              <label className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]">
+                Enrolled grade level
               </label>
-              <p className="font-mono text-xs text-muted-foreground">
-                Select your current class to curate relevant subject materials:
+              <p className="text-xs text-[#635F69]">
+                Pick your current class to curate relevant subject materials.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {STUDENT_GRADES.map((g) => (
                   <button
                     key={g}
                     type="button"
                     onClick={() => setSelectedGrade(g)}
                     className={cn(
-                      "p-3 text-center border font-mono text-xs transition-colors",
+                      "cursor-pointer rounded-2xl px-3 py-3.5 font-heading text-sm font-extrabold transition-all duration-200",
                       selectedGrade === g
-                        ? "bg-primary text-primary-foreground border-primary font-semibold"
-                        : "bg-background text-foreground border-border/80 hover:border-primary/50"
+                        ? "bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clayButton"
+                        : "bg-[#EFEBF5] text-[#332F3A] shadow-clayPressed hover:-translate-y-0.5"
                     )}
                   >
                     {g}
@@ -217,14 +243,14 @@ function ProfileContent() {
               </div>
             </div>
           ) : (
-            <div className="space-y-3 pt-4 border-t border-border/60">
-              <label className="font-mono text-xs uppercase tracking-wider font-semibold text-foreground">
-                Grades You Teach (Multiple Selection)
+            <div className="space-y-3 border-t border-[#7C3AED]/10 pt-6">
+              <label className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#332F3A]">
+                Grades you teach
               </label>
-              <p className="font-mono text-xs text-muted-foreground">
-                Select all secondary and higher secondary levels you instruct:
+              <p className="text-xs text-[#635F69]">
+                Select every level you instruct — multiple selections allowed.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {TEACHER_GRADES.map((g) => {
                   const isChecked = selectedGradesTaught.includes(g);
                   return (
@@ -233,14 +259,14 @@ function ProfileContent() {
                       type="button"
                       onClick={() => toggleTeacherGrade(g)}
                       className={cn(
-                        "p-3 text-center border font-mono text-xs transition-colors flex items-center justify-between",
+                        "flex cursor-pointer items-center justify-between rounded-2xl px-3 py-3.5 font-heading text-sm font-extrabold transition-all duration-200",
                         isChecked
-                          ? "bg-primary text-primary-foreground border-primary font-semibold"
-                          : "bg-background text-foreground border-border/80 hover:border-primary/50"
+                          ? "bg-gradient-to-br from-[#38BDF8] to-[#0EA5E9] text-white shadow-clayButton"
+                          : "bg-[#EFEBF5] text-[#332F3A] shadow-clayPressed hover:-translate-y-0.5"
                       )}
                     >
                       <span>{g}</span>
-                      {isChecked && <Check className="size-3.5 ml-1" />}
+                      {isChecked && <Check className="ml-1 size-4 stroke-[3]" />}
                     </button>
                   );
                 })}
@@ -249,30 +275,30 @@ function ProfileContent() {
           )}
 
           {/* Actions */}
-          <div className="pt-6 border-t border-border/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col items-center justify-between gap-4 border-t border-[#7C3AED]/10 pt-6 sm:flex-row">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={() => setIsOnboardingOpen(true)}
-              className="font-mono text-xs gap-1.5 w-full sm:w-auto"
+              className="w-full gap-2 sm:w-auto"
             >
-              <RotateCcw className="size-3.5" />
-              Relaunch Onboarding Walkthrough
+              <RotateCcw className="size-4" />
+              Relaunch walkthrough
             </Button>
 
             <Button
               onClick={handleSave}
               disabled={isSaving}
               size="sm"
-              className="font-mono text-xs gap-1.5 w-full sm:w-auto"
+              className="w-full gap-2 sm:w-auto"
             >
               {isSaving ? (
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <Save className="size-3.5" />
+                <Save className="size-4" />
               )}
-              Save Profile Changes
+              Save changes
             </Button>
           </div>
         </div>
@@ -285,8 +311,8 @@ export default function ProfilePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[60vh] flex items-center justify-center">
-          <Loader2 className="size-6 animate-spin text-muted-foreground" />
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <Loader2 className="size-8 animate-spin text-[#7C3AED]" />
         </div>
       }
     >

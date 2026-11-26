@@ -40,7 +40,7 @@ export function getDueStatus(
       status: "no_due_date",
       label: "No due date",
       badgeClassName:
-        "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700",
+        "bg-[#EFEBF5] text-[#635F69] border-white/60",
     };
   }
 
@@ -50,7 +50,7 @@ export function getDueStatus(
       status: "no_due_date",
       label: "Invalid date",
       badgeClassName:
-        "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700",
+        "bg-[#EFEBF5] text-[#635F69] border-white/60",
     };
   }
 
@@ -62,7 +62,7 @@ export function getDueStatus(
         day: "numeric",
       })}`,
       badgeClassName:
-        "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border-blue-200 dark:border-blue-900",
+        "bg-[#0EA5E9]/10 text-[#0284C7] border-[#0EA5E9]/20",
     };
   }
 
@@ -76,7 +76,7 @@ export function getDueStatus(
       status: "overdue",
       label: overdueDays === 1 ? "Overdue (Yesterday)" : `Overdue by ${overdueDays}d`,
       badgeClassName:
-        "bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-300 border-red-200 dark:border-red-900",
+        "bg-[#DB2777]/10 text-[#DB2777] border-[#DB2777]/25",
     };
   }
 
@@ -90,7 +90,7 @@ export function getDueStatus(
       status: "due_today",
       label: diffHours > 0 ? `Due Today (${diffHours}h left)` : "Due Today",
       badgeClassName:
-        "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 border-amber-200 dark:border-amber-900",
+        "bg-[#F59E0B]/10 text-[#B45309] border-[#F59E0B]/25",
     };
   }
 
@@ -100,7 +100,7 @@ export function getDueStatus(
       status: "due_soon",
       label: "Due Tomorrow",
       badgeClassName:
-        "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 border-amber-200 dark:border-amber-900",
+        "bg-[#F59E0B]/10 text-[#B45309] border-[#F59E0B]/25",
     };
   }
 
@@ -109,7 +109,7 @@ export function getDueStatus(
       status: "due_soon",
       label: `Due in ${diffDays} days`,
       badgeClassName:
-        "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border-blue-200 dark:border-blue-900",
+        "bg-[#0EA5E9]/10 text-[#0284C7] border-[#0EA5E9]/20",
     };
   }
 
@@ -117,7 +117,7 @@ export function getDueStatus(
     status: "upcoming",
     label: `Due in ${diffDays} days`,
     badgeClassName:
-      "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900",
+      "bg-[#10B981]/10 text-[#047857] border-[#10B981]/20",
   };
 }
 

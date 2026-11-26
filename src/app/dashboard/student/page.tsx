@@ -5,7 +5,6 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { LearningItem, Quiz, StudyTask } from "@/types/database";
 import { useRole } from "@/context/role-context";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -18,13 +17,8 @@ import {
   Circle,
   Plus,
   ArrowRight,
-  ExternalLink,
   ChevronRight,
-  Sparkles,
-  Calendar,
-  Layers,
   Clock,
-  Award,
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -46,14 +40,12 @@ export default function StudentDashboard() {
     try {
       setIsLoading(true);
 
-      // Load tasks
       const { data: tasksData } = await supabase
         .from("study_tasks")
         .select("*")
         .order("created_at", { ascending: false })
         .limit(6);
 
-      // Load resources
       const { data: resData } = await supabase
         .from("learning_items")
         .select("*")
@@ -61,7 +53,6 @@ export default function StudentDashboard() {
         .order("created_at", { ascending: false })
         .limit(4);
 
-      // Load quizzes
       const { data: quizData } = await supabase
         .from("quizzes")
         .select("*")
@@ -132,296 +123,222 @@ export default function StudentDashboard() {
 
   const pendingTasksCount = studyTasks.filter((t) => !t.is_completed).length;
 
+  const metrics = [
+    {
+      label: "Active targets",
+      value: pendingTasksCount,
+      hint: `${studyTasks.length} in your planner`,
+      icon: CheckCircle2,
+      tint: "from-[#A78BFA] to-[#7C3AED]",
+    },
+    {
+      label: "Practice tests",
+      value: quizzes.length,
+      hint: "Ready for timed practice",
+      icon: GraduationCap,
+      tint: "from-[#67E8F9] to-[#0EA5E9]",
+    },
+    {
+      label: "Curated archive",
+      value: recentResources.length,
+      hint: "Notes, papers & videos",
+      icon: BookOpen,
+      tint: "from-[#6EE7B7] to-[#10B981]",
+    },
+    {
+      label: "Precision tools",
+      value: "0.01s",
+      hint: "Stopwatch & focus timer",
+      icon: Timer,
+      tint: "from-[#FCD34D] to-[#F59E0B]",
+    },
+  ];
+
+  const portals = [
+    {
+      href: "/library",
+      title: "Learning library",
+      description: "Browse all subject materials, reference guides and notes.",
+      icon: BookOpen,
+      tint: "from-[#A78BFA] to-[#7C3AED]",
+    },
+    {
+      href: "/question-papers",
+      title: "Question papers",
+      description: "Archived board papers, model sets and exam rubrics.",
+      icon: FileText,
+      tint: "from-[#67E8F9] to-[#0EA5E9]",
+    },
+    {
+      href: "/quizzes",
+      title: "Practice & quiz",
+      description: "Timed objective tests with auto-scoring and reviews.",
+      icon: GraduationCap,
+      tint: "from-[#F9A8D4] to-[#DB2777]",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-background text-foreground py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-10">
-        {/* Desk Header */}
-        <div className="border-b border-border/80 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-xs uppercase tracking-widest text-primary font-semibold">
-                Academic Workdesk
-              </span>
-              <span className="text-border">/</span>
-              <Badge variant="outline" className="font-mono text-xs">
-                {grade || "Grade 10"}
-              </Badge>
+    <div className="min-h-screen px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-10">
+        {/* Header */}
+        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="secondary">Academic workdesk</Badge>
+              <Badge variant="outline">{grade || "Grade 10"}</Badge>
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
+            <h1 className="font-heading text-3xl font-black tracking-tight text-[#332F3A] sm:text-4xl lg:text-5xl">
               Scholar Study Desk
             </h1>
-            <p className="font-mono text-xs sm:text-sm text-muted-foreground max-w-2xl">
-              Your personalized study repository, active revision targets, question bank, and precision timer.
+            <p className="max-w-2xl text-sm leading-relaxed text-[#635F69] sm:text-base">
+              Your personal study repository, active revision targets, question
+              bank and focus timer — all in one soft space.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setIsOnboardingOpen(true)}
-              className="font-mono text-xs"
             >
-              Adjust Grade
+              Adjust grade
             </Button>
             <Link href="/tools">
-              <Button size="sm" className="font-mono text-xs gap-1.5">
-                <Timer className="size-3.5" />
-                Launch Study Tools
+              <Button size="sm">
+                <Timer className="size-4" />
+                Launch study tools
               </Button>
             </Link>
           </div>
         </div>
 
-        {/* Top Metric Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border-border/80 p-5 space-y-2 bg-card">
-            <div className="flex items-center justify-between text-muted-foreground font-mono text-xs uppercase">
-              <span>Active Targets</span>
-              <CheckCircle2 className="size-4 text-primary" />
-            </div>
-            <div className="font-serif text-3xl font-medium text-foreground">
-              {pendingTasksCount}
-            </div>
-            <p className="font-mono text-xs text-muted-foreground">
-              {studyTasks.length} recorded in current planner
-            </p>
-          </Card>
-
-          <Card className="border-border/80 p-5 space-y-2 bg-card">
-            <div className="flex items-center justify-between text-muted-foreground font-mono text-xs uppercase">
-              <span>Practice Tests</span>
-              <GraduationCap className="size-4 text-primary" />
-            </div>
-            <div className="font-serif text-3xl font-medium text-foreground">
-              {quizzes.length}
-            </div>
-            <p className="font-mono text-xs text-muted-foreground">
-              Ready for timed self-evaluation
-            </p>
-          </Card>
-
-          <Card className="border-border/80 p-5 space-y-2 bg-card">
-            <div className="flex items-center justify-between text-muted-foreground font-mono text-xs uppercase">
-              <span>Curated Archive</span>
-              <BookOpen className="size-4 text-primary" />
-            </div>
-            <div className="font-serif text-3xl font-medium text-foreground">
-              {recentResources.length}
-            </div>
-            <p className="font-mono text-xs text-muted-foreground">
-              Textbooks, notes, & video lessons
-            </p>
-          </Card>
-
-          <Card className="border-border/80 p-5 space-y-2 bg-card">
-            <div className="flex items-center justify-between text-muted-foreground font-mono text-xs uppercase">
-              <span>Stationery Tools</span>
-              <Timer className="size-4 text-primary" />
-            </div>
-            <div className="font-serif text-3xl font-medium text-foreground">
-              0.01s
-            </div>
-            <p className="font-mono text-xs text-muted-foreground">
-              Monotonic precision stopwatch & timer
-            </p>
-          </Card>
+        {/* Metrics */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {metrics.map((metric) => {
+            const Icon = metric.icon;
+            return (
+              <div
+                key={metric.label}
+                className="rounded-[32px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-clayDeep"
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="font-heading text-xs font-extrabold uppercase tracking-wide text-[#635F69]">
+                    {metric.label}
+                  </span>
+                  <span
+                    className={`flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br ${metric.tint} text-white shadow-clayButton`}
+                  >
+                    <Icon className="size-5" />
+                  </span>
+                </div>
+                <div className="font-heading text-3xl font-black tracking-tight text-[#332F3A]">
+                  {metric.value}
+                </div>
+                <p className="mt-1 text-xs text-[#635F69]">{metric.hint}</p>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Main Grid: Targets on Left, Curated on Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Study Targets (Planner) - 2 Cols */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="flex items-center justify-between border-b border-border/80 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs text-primary font-bold">01.</span>
-                <h2 className="font-serif text-2xl font-medium">Daily Study Targets</h2>
-              </div>
-              <Link
-                href="/tools"
-                className="font-mono text-xs text-primary hover:underline flex items-center gap-1"
-              >
-                Full Planner <ChevronRight className="size-3" />
-              </Link>
-            </div>
-
-            {/* Quick Add Form */}
-            <form onSubmit={handleQuickAddTask} className="flex gap-2">
-              <Input
-                placeholder="Log a new topic or target (e.g., Revise Trigonometry formulas)..."
-                value={newTaskTitle}
-                onChange={(e) => setNewTaskTitle(e.target.value)}
-                className="font-mono text-xs bg-card"
-                disabled={isAddingTask}
-              />
-              <Button
-                type="submit"
-                disabled={isAddingTask || !newTaskTitle.trim()}
-                className="font-mono text-xs shrink-0 gap-1.5"
-              >
-                {isAddingTask ? (
-                  <Loader2 className="size-3.5 animate-spin" />
-                ) : (
-                  <Plus className="size-3.5" />
-                )}
-                Add Target
-              </Button>
-            </form>
-
-            {/* Task List */}
-            <div className="divide-y divide-border/60 border border-border/80 bg-card">
-              {isLoading ? (
-                <div className="p-8 text-center text-muted-foreground font-mono text-xs flex items-center justify-center gap-2">
-                  <Loader2 className="size-4 animate-spin" />
-                  Accessing study ledger...
-                </div>
-              ) : studyTasks.length === 0 ? (
-                <div className="p-8 text-center space-y-2">
-                  <p className="font-mono text-xs text-muted-foreground">
-                    No active study targets logged.
-                  </p>
-                  <p className="font-serif text-sm italic">
-                    Add your first target above to structure today's revision.
-                  </p>
-                </div>
-              ) : (
-                studyTasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className={cn(
-                      "p-4 flex items-center justify-between gap-4 transition-colors hover:bg-muted/40",
-                      task.is_completed && "opacity-60 bg-muted/20"
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => handleToggleTask(task)}
-                        className="text-primary hover:text-primary/80 transition-colors shrink-0"
-                        title={task.is_completed ? "Mark incomplete" : "Mark complete"}
-                      >
-                        {task.is_completed ? (
-                          <CheckCircle2 className="size-5 text-primary" />
-                        ) : (
-                          <Circle className="size-5 text-muted-foreground" />
-                        )}
-                      </button>
-                      <span
-                        className={cn(
-                          "font-mono text-xs sm:text-sm text-foreground",
-                          task.is_completed && "line-through text-muted-foreground"
-                        )}
-                      >
-                        {task.title}
-                      </span>
-                    </div>
-
-                    {task.target_date && (
-                      <span className="font-mono text-[10px] text-muted-foreground uppercase shrink-0">
-                        {task.target_date}
-                      </span>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-
-            {/* Quick Navigation Utility Grid */}
-            <div className="space-y-4 pt-4">
-              <div className="flex items-center gap-2 border-b border-border/80 pb-2">
-                <span className="font-mono text-xs text-primary font-bold">02.</span>
-                <h3 className="font-serif text-xl font-medium">Quick Academic Portals</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {/* Targets */}
+          <div className="space-y-6 lg:col-span-2">
+            <div className="rounded-[36px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl sm:p-7">
+              <div className="mb-5 flex items-center justify-between">
+                <h2 className="font-heading text-2xl font-black tracking-tight text-[#332F3A]">
+                  Daily study targets
+                </h2>
                 <Link
-                  href="/library"
-                  className="group block p-4 border border-border/80 bg-card hover:border-primary transition-colors space-y-2"
+                  href="/tools"
+                  className="inline-flex items-center gap-1 rounded-full bg-[#7C3AED]/10 px-3.5 py-2 font-heading text-xs font-extrabold text-[#7C3AED] transition-colors hover:bg-[#7C3AED]/15"
                 >
-                  <div className="flex items-center justify-between">
-                    <BookOpen className="size-5 text-primary" />
-                    <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                  </div>
-                  <h4 className="font-serif text-base font-medium">Learning Library</h4>
-                  <p className="font-mono text-[11px] text-muted-foreground line-clamp-2">
-                    Browse all subject materials, reference guides, and notes.
-                  </p>
-                </Link>
-
-                <Link
-                  href="/question-papers"
-                  className="group block p-4 border border-border/80 bg-card hover:border-primary transition-colors space-y-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <FileText className="size-5 text-primary" />
-                    <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                  </div>
-                  <h4 className="font-serif text-base font-medium">Question Papers</h4>
-                  <p className="font-mono text-[11px] text-muted-foreground line-clamp-2">
-                    Archived past board papers, model sets, and exam rubrics.
-                  </p>
-                </Link>
-
-                <Link
-                  href="/quizzes"
-                  className="group block p-4 border border-border/80 bg-card hover:border-primary transition-colors space-y-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <GraduationCap className="size-5 text-primary" />
-                    <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                  </div>
-                  <h4 className="font-serif text-base font-medium">Practice & Quiz</h4>
-                  <p className="font-mono text-[11px] text-muted-foreground line-clamp-2">
-                    Timed objective tests with auto-scoring and reviews.
-                  </p>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Recent Materials & Timed Tests */}
-          <div className="space-y-6">
-            {/* Recent Resources */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-border/80 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs text-primary font-bold">03.</span>
-                  <h3 className="font-serif text-xl font-medium">Curated Library</h3>
-                </div>
-                <Link
-                  href="/library"
-                  className="font-mono text-xs text-primary hover:underline flex items-center gap-1"
-                >
-                  Catalog <ChevronRight className="size-3" />
+                  Full planner
+                  <ChevronRight className="size-3.5" />
                 </Link>
               </div>
 
-              <div className="divide-y divide-border/60 border border-border/80 bg-card">
+              <form onSubmit={handleQuickAddTask} className="mb-5 flex flex-col gap-3 sm:flex-row">
+                <Input
+                  placeholder="Log a new target (e.g. Revise trigonometry formulas)…"
+                  value={newTaskTitle}
+                  onChange={(e) => setNewTaskTitle(e.target.value)}
+                  disabled={isAddingTask}
+                  aria-label="New study target"
+                />
+                <Button
+                  type="submit"
+                  disabled={isAddingTask || !newTaskTitle.trim()}
+                  className="shrink-0"
+                >
+                  {isAddingTask ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Plus className="size-4" />
+                  )}
+                  Add target
+                </Button>
+              </form>
+
+              <div className="space-y-2">
                 {isLoading ? (
-                  <div className="p-6 text-center text-muted-foreground font-mono text-xs">
-                    Loading resources...
+                  <div className="flex items-center justify-center gap-2 rounded-3xl bg-[#EFEBF5] p-8 text-sm text-[#635F69]">
+                    <Loader2 className="size-4 animate-spin" />
+                    Loading your study ledger…
                   </div>
-                ) : recentResources.length === 0 ? (
-                  <div className="p-6 text-center text-muted-foreground font-mono text-xs">
-                    No resources cataloged yet.
+                ) : studyTasks.length === 0 ? (
+                  <div className="rounded-3xl bg-[#EFEBF5] p-8 text-center">
+                    <p className="text-sm font-medium text-[#332F3A]">
+                      No active study targets yet.
+                    </p>
+                    <p className="mt-1 text-xs text-[#635F69]">
+                      Add your first target above to structure today&apos;s revision.
+                    </p>
                   </div>
                 ) : (
-                  recentResources.map((item) => (
-                    <div key={item.id} className="p-3.5 space-y-1 hover:bg-muted/40 transition-colors">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-semibold">
-                          {item.subject || "General"}
+                  studyTasks.map((task) => (
+                    <div
+                      key={task.id}
+                      className={cn(
+                        "flex items-center justify-between gap-4 rounded-2xl px-4 py-3.5 transition-all duration-200",
+                        task.is_completed
+                          ? "bg-[#EFEBF5]/60 opacity-60"
+                          : "bg-[#EFEBF5]/80 hover:bg-[#EFEBF5]"
+                      )}
+                    >
+                      <div className="flex min-w-0 items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleTask(task)}
+                          className={cn(
+                            "shrink-0 cursor-pointer transition-colors",
+                            task.is_completed
+                              ? "text-[#10B981]"
+                              : "text-[#635F69] hover:text-[#7C3AED]"
+                          )}
+                          title={task.is_completed ? "Mark incomplete" : "Mark complete"}
+                        >
+                          {task.is_completed ? (
+                            <CheckCircle2 className="size-6" />
+                          ) : (
+                            <Circle className="size-6" />
+                          )}
+                        </button>
+                        <span
+                          className={cn(
+                            "truncate text-sm font-medium text-[#332F3A]",
+                            task.is_completed && "text-[#635F69] line-through"
+                          )}
+                        >
+                          {task.title}
                         </span>
-                        <Badge variant="outline" className="font-mono text-[10px] py-0 px-1.5">
-                          {item.resource_type || "Resource"}
-                        </Badge>
                       </div>
-                      <h4 className="font-serif text-sm font-medium line-clamp-1">
-                        {item.title}
-                      </h4>
-                      {item.topic && (
-                        <p className="font-mono text-[10px] text-muted-foreground">
-                          Topic: {item.topic}
-                        </p>
+
+                      {task.target_date && (
+                        <span className="shrink-0 text-[11px] text-[#635F69]">
+                          {task.target_date}
+                        </span>
                       )}
                     </div>
                   ))
@@ -429,47 +346,130 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* Quizzes Available */}
+            {/* Portals */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-border/80 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs text-primary font-bold">04.</span>
-                  <h3 className="font-serif text-xl font-medium">Timed Quizzes</h3>
-                </div>
+              <h3 className="font-heading text-xl font-black tracking-tight text-[#332F3A]">
+                Quick academic portals
+              </h3>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                {portals.map((portal) => {
+                  const Icon = portal.icon;
+                  return (
+                    <Link
+                      key={portal.href}
+                      href={portal.href}
+                      className="group rounded-[28px] border border-white/70 bg-white/70 p-5 shadow-clayCard backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-clayDeep"
+                    >
+                      <div className="mb-3 flex items-center justify-between">
+                        <span
+                          className={`flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br ${portal.tint} text-white shadow-clayButton`}
+                        >
+                          <Icon className="size-5" />
+                        </span>
+                        <ArrowRight className="size-4 text-[#635F69] transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[#7C3AED]" />
+                      </div>
+                      <h4 className="font-heading text-base font-extrabold text-[#332F3A]">
+                        {portal.title}
+                      </h4>
+                      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[#635F69]">
+                        {portal.description}
+                      </p>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Right column */}
+          <div className="space-y-6">
+            <div className="rounded-[32px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+                  Curated library
+                </h3>
                 <Link
-                  href="/quizzes"
-                  className="font-mono text-xs text-primary hover:underline flex items-center gap-1"
+                  href="/library"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-[#7C3AED] hover:underline"
                 >
-                  View All <ChevronRight className="size-3" />
+                  Catalog
+                  <ChevronRight className="size-3" />
                 </Link>
               </div>
 
-              <div className="divide-y divide-border/60 border border-border/80 bg-card">
+              <div className="space-y-2">
+                {isLoading ? (
+                  <p className="rounded-2xl bg-[#EFEBF5] p-5 text-center text-xs text-[#635F69]">
+                    Loading resources…
+                  </p>
+                ) : recentResources.length === 0 ? (
+                  <p className="rounded-2xl bg-[#EFEBF5] p-5 text-center text-xs text-[#635F69]">
+                    No resources catalogued yet.
+                  </p>
+                ) : (
+                  recentResources.map((item) => (
+                    <div
+                      key={item.id}
+                      className="space-y-1 rounded-2xl px-3.5 py-3 transition-colors hover:bg-[#EFEBF5]/70"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-heading text-[10px] font-extrabold uppercase tracking-wide text-[#7C3AED]">
+                          {item.subject || "General"}
+                        </span>
+                        <Badge variant="outline">{item.resource_type || "Resource"}</Badge>
+                      </div>
+                      <h4 className="line-clamp-1 text-sm font-bold text-[#332F3A]">
+                        {item.title}
+                      </h4>
+                      {item.topic && (
+                        <p className="text-[11px] text-[#635F69]">Topic: {item.topic}</p>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="rounded-[32px] border border-white/70 bg-white/70 p-6 shadow-clayCard backdrop-blur-xl">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="font-heading text-lg font-extrabold text-[#332F3A]">
+                  Timed quizzes
+                </h3>
+                <Link
+                  href="/quizzes"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-[#7C3AED] hover:underline"
+                >
+                  View all
+                  <ChevronRight className="size-3" />
+                </Link>
+              </div>
+
+              <div className="space-y-2">
                 {quizzes.length === 0 ? (
-                  <div className="p-6 text-center text-muted-foreground font-mono text-xs">
+                  <p className="rounded-2xl bg-[#EFEBF5] p-5 text-center text-xs text-[#635F69]">
                     No quizzes authored yet.
-                  </div>
+                  </p>
                 ) : (
                   quizzes.map((q) => (
                     <Link
                       key={q.id}
                       href={`/quizzes/${q.id}`}
-                      className="block p-3.5 hover:bg-muted/40 transition-colors space-y-1 group"
+                      className="group block space-y-1 rounded-2xl px-3.5 py-3 transition-colors hover:bg-[#EFEBF5]/70"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-[10px] text-primary uppercase font-medium">
+                        <span className="font-heading text-[10px] font-extrabold uppercase tracking-wide text-[#0EA5E9]">
                           {q.subject || "Evaluation"}
                         </span>
-                        <span className="font-mono text-[10px] text-muted-foreground flex items-center gap-1">
+                        <span className="flex items-center gap-1 text-[10px] text-[#635F69]">
                           <Clock className="size-3" />
                           {Math.round(q.duration_seconds / 60)}m
                         </span>
                       </div>
-                      <h4 className="font-serif text-sm font-medium group-hover:text-primary transition-colors line-clamp-1">
+                      <h4 className="line-clamp-1 text-sm font-bold text-[#332F3A] transition-colors group-hover:text-[#7C3AED]">
                         {q.title}
                       </h4>
-                      <p className="font-mono text-[10px] text-muted-foreground">
-                        {q.questions?.length || 0} questions • Click to begin session
+                      <p className="text-[11px] text-[#635F69]">
+                        {q.questions?.length || 0} questions · tap to begin
                       </p>
                     </Link>
                   ))
@@ -477,22 +477,28 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* Study Target Focus Box */}
-            <div className="p-4 border border-border/80 bg-secondary/50 space-y-2">
-              <div className="flex items-center gap-2">
-                <Timer className="size-4 text-primary" />
-                <span className="font-mono text-xs uppercase font-semibold text-primary">
-                  Monotonic Precision Timing
-                </span>
+            <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#A78BFA] via-[#7C3AED] to-[#6D28D9] p-6 shadow-clayDeep">
+              <div className="absolute -top-10 -right-6 size-32 rounded-full bg-white/20 blur-2xl" />
+              <div className="relative space-y-2">
+                <div className="flex items-center gap-2 text-white">
+                  <Timer className="size-4" />
+                  <span className="font-heading text-xs font-extrabold uppercase tracking-wide">
+                    Focus timer
+                  </span>
+                </div>
+                <p className="text-sm leading-relaxed text-white/85">
+                  Time an exam set or a Pomodoro sprint — the stopwatch stays
+                  accurate even across background tabs.
+                </p>
+                <Link href="/tools" className="inline-block pt-2">
+                  <Button
+                    size="sm"
+                    className="bg-white text-[#6D28D9] hover:bg-white"
+                  >
+                    Open stopwatch
+                  </Button>
+                </Link>
               </div>
-              <p className="font-mono text-xs text-muted-foreground">
-                Need to time an examination set or Pomodoro interval? The stopwatch runs with millisecond accuracy across background tabs.
-              </p>
-              <Link href="/tools" className="inline-block pt-1">
-                <Button size="sm" variant="outline" className="font-mono text-xs">
-                  Open Stopwatch & Timer
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
