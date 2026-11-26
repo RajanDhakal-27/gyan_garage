@@ -94,7 +94,7 @@ export function ResourceCard({
             {resource.resource_type && (
               <span
                 className={cn(
-                  "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium",
+                  "inline-flex items-center gap-1 rounded-none border px-2 py-0.5 text-xs font-medium",
                   getResourceBadgeColor(resource.resource_type)
                 )}
               >

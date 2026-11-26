@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { PlannerManager } from "@/components/planner/planner-manager";
+import { StudyToolsManager } from "@/components/tools/study-tools-manager";
+import { Loader2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Student Study Planner & Targets | Gyan Garage",
+  title: "Study Planner & Targets | Gyan Garage",
   description: "Organize your study goals, track daily revision tasks, and monitor completion progress.",
 };
 
@@ -11,17 +12,32 @@ export default function PlannerPage() {
   return (
     <Suspense
       fallback={
-        <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6">
-          <div className="h-8 w-48 bg-muted rounded animate-pulse mb-6" />
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-16 rounded-xl bg-muted/20 animate-pulse border" />
-            ))}
-          </div>
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <Loader2 className="size-6 animate-spin text-muted-foreground" />
         </div>
       }
     >
-      <PlannerManager />
+      <div className="min-h-screen bg-background text-foreground py-10 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <div className="border-b border-border/80 pb-6 space-y-2 text-center max-w-2xl mx-auto">
+            <div className="flex items-center justify-center gap-2">
+              <span className="font-mono text-xs uppercase tracking-widest text-primary font-semibold">
+                Revision Desk
+              </span>
+              <span className="text-border">/</span>
+              <span className="font-mono text-xs text-muted-foreground">Study Ledger</span>
+            </div>
+            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
+              Study Planner & Precision Tools
+            </h1>
+            <p className="font-mono text-xs sm:text-sm text-muted-foreground">
+              Track your daily revision tasks, monitor completion progress, and time your study sessions with precision.
+            </p>
+          </div>
+
+          <StudyToolsManager initialTab="targets" />
+        </div>
+      </div>
     </Suspense>
   );
 }
